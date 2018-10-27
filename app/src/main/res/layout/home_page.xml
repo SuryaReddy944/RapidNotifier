@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="50dp"
-        android:background="@color/grey"
+        android:background="@color/white"
         android:text="laskdjasldjkdlask"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -22,9 +22,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:theme="@style/Widget.BottomNavigationView"
-        android:background="@color/white"
+        android:background="@color/grey"
         app:itemIconTint="@drawable/navi_selector"
-
         app:itemTextColor="@color/block"
         app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"

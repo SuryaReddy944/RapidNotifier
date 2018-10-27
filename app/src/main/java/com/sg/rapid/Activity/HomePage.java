@@ -23,7 +23,7 @@ public class HomePage extends AppCompatActivity  implements BottomNavigationView
 
         setContentView(R.layout.home_page);
         //loading the default fragment
-        loadFragment(new HomeFragment());
+        loadFragment(new NotificationsFragment());
 
         //getting bottom navigation view and attaching the listener
         BottomNavigationView navigation = findViewById(R.id.navigation);
