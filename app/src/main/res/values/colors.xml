@@ -10,5 +10,6 @@
 
         <color name="colorNavIcon">#dae9f6</color>
         <color name="colorNavText">#01294b</color>
+    <color name="green">#7CFC00	</color>
 
 </resources>
