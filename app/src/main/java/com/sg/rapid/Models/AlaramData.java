@@ -10,6 +10,9 @@ public class AlaramData {
     private String info;
 
 
+    private String status;
+
+
     public String getYear() {
         return year;
     }
@@ -57,6 +60,15 @@ public class AlaramData {
     public void setInfo(String info) {
         this.info = info;
     }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
 
 
 }

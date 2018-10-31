@@ -1,122 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/llyear"
-        android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:layout_height="wrap_content">
+
+
         <LinearLayout
+            android:id="@+id/llinfo"
             android:layout_width="match_parent"
-            android:padding="10dp"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/lblyear"
-                android:text="2018"
-                android:textColor="@color/block"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
-
-
-    <LinearLayout
-        android:id="@+id/llinfo"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:padding="10dp"
-        android:orientation="horizontal"
-        android:weightSum="4">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.2"
+            android:layout_height="match_parent"
             android:gravity="center"
-            android:orientation="vertical">
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:weightSum="4">
 
-            <TextView
-                android:id="@+id/lbldate"
-                android:textColor="@color/block"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="24 OCT" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.7"
+                android:gravity="start"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/lbltime"
-                android:layout_width="wrap_content"
-                android:textColor="@color/block"
-                android:layout_height="wrap_content"
-                android:text="07:34:45" />
+                <TextView
+                    android:id="@+id/lbldate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="24 OCT"
+                    android:textSize="14dp"
+                    android:textColor="@color/block" />
+
+                <TextView
+                    android:id="@+id/lbltime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="07:34:45"
+                    android:textSize="12dp"
+                    android:textColor="@color/block" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="0.3"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <TextView
+                    android:id="@+id/viewcircle"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:background="@drawable/green_circle">
+
+                </TextView>
+
+                <TextView
+                    android:id="@+id/verticalline"
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/grey">
+
+                </TextView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2.3"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/lbltitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14dp"
+                    android:text="jasdhkshdkashd"
+                    android:padding="2dp"
+                    android:textColor="@color/block" />
+
+                <TextView
+                    android:id="@+id/lbldescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="jasdhkshdkashd"
+                    android:textSize="12dp"
+                    android:padding="2dp"
+                    android:textColor="@color/block" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.7"
+                android:gravity="right"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/lblinfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tripped"
+                    android:textSize="14dp"
+                    android:textColor="@color/block" />
+            </LinearLayout>
+
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.2"
-            android:gravity="center"
-            android:layout_gravity="center"
-            android:orientation="vertical">
 
-            <View
-                android:id="@+id/viewcircle"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:background="@drawable/green_circle">
-
-            </View>
-
-            <View
-                android:layout_width="1dp"
-                android:background="@color/grey"
-                android:layout_height="match_parent">
-
-            </View>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="3.1"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/lbltitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/block"
-                android:text="jasdhkshdkashd" />
-
-            <TextView
-                android:id="@+id/lbldescription"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/block"
-                android:text="jasdhkshdkashd" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/lblinfo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/block"
-                android:text="Tripped" />
-        </LinearLayout>
-
-    </LinearLayout>
-
-    </LinearLayout>
 
 </LinearLayout>

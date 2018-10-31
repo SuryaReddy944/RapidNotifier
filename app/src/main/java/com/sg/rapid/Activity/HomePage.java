@@ -7,6 +7,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.sg.rapid.Fragments.ExploreFragment;
 import com.sg.rapid.Fragments.HomeFragment;
@@ -28,6 +29,8 @@ public class HomePage extends AppCompatActivity  implements BottomNavigationView
         //getting bottom navigation view and attaching the listener
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);
+        View view = navigation.findViewById(R.id.navigation_notifications);
+        view.performClick();
     }
 
     @Override

@@ -7,6 +7,40 @@
     android:background="@color/white"
     android:orientation="vertical">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:layout_height="150dp">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:orientation="horizontal">
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/viewpager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <ImageView
+                android:id="@+id/right_nav"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center_vertical|right"
+                android:layout_marginRight="5dp"
+                android:padding="20dp"
+                android:src="@drawable/right_arrow" />
+
+        </FrameLayout>
+
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewPager"
+            android:layout_width="fill_parent"
+            android:layout_height="100dp" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/tabs"
@@ -25,10 +59,10 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="horizontal"
-            android:layout_marginRight="1dp"
             android:background="@drawable/tab_selected"
-            android:gravity="center">
+
+            android:gravity="center"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/lblalaram"
@@ -41,12 +75,12 @@
             <TextView
                 android:id="@+id/lblalaramcount"
                 android:layout_width="20dp"
-                android:text="6"
+                android:layout_height="20dp"
                 android:layout_marginLeft="5dp"
-                android:textColor="@color/white"
-                android:gravity="center"
                 android:background="@drawable/alaram_count"
-                android:layout_height="20dp" />
+                android:gravity="center"
+                android:text="6"
+                android:textColor="@color/white" />
 
         </LinearLayout>
 
@@ -55,25 +89,27 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_marginRight="1dp"
+
             android:background="@drawable/non_selected_tab"
             android:gravity="center">
 
             <TextView
                 android:id="@+id/lbevents"
                 android:layout_width="wrap_content"
-                android:textAllCaps="true"
                 android:layout_height="wrap_content"
-                android:text="Events" />
+
+                android:text="Events"
+                android:textAllCaps="true" />
+
             <TextView
                 android:id="@+id/lbleventscount"
                 android:layout_width="20dp"
-                android:text="6"
+                android:layout_height="20dp"
                 android:layout_marginLeft="5dp"
-                android:textColor="@color/white"
-                android:gravity="center"
                 android:background="@drawable/non_selected_count"
-                android:layout_height="20dp" />
+                android:gravity="center"
+                android:text="6"
+                android:textColor="@color/white" />
 
         </LinearLayout>
 
@@ -88,27 +124,28 @@
             <TextView
                 android:id="@+id/lblfilter"
                 android:layout_width="wrap_content"
-                android:textAllCaps="true"
                 android:layout_height="wrap_content"
-                android:text="Filter" />
+                android:text="Filter"
+                android:textAllCaps="true" />
         </LinearLayout>
 
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_marginTop="5dp"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp">
+
         <View
             android:layout_width="fill_parent"
-            android:layout_height="4dp"
-            android:background="@color/grey"/>
+            android:layout_height="2dp"
+            android:background="@color/grey" />
     </LinearLayout>
 
     <FrameLayout
         android:id="@+id/tabs_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="50dp"
         android:background="@color/white"
         android:text="laskdjasldjkdlask"
         app:layout_constraintLeft_toLeftOf="parent"
