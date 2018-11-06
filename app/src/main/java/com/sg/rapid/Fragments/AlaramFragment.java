@@ -6,10 +6,16 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.sg.rapid.Adapters.AdapterSectionRecycler;
 import com.sg.rapid.Adapters.SectionHeader;
 import com.sg.rapid.Models.AlaramData;
@@ -22,6 +28,10 @@ public class AlaramFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private AdapterSectionRecycler adapterRecycler;
+    private FirebaseDatabase mFirebaseDatabase ;
+    private DatabaseReference mDatabaseReference;
+    private  List<SectionHeader> sections;
+    private   List<AlaramData> childList ;
 
     @Nullable
     @Override
@@ -33,8 +43,51 @@ public class AlaramFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
+        sections = new ArrayList<>();
+        childList = new ArrayList<>();
 
-        List<AlaramData> childList = new ArrayList<>();
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mDatabaseReference = mFirebaseDatabase.getReference();
+
+
+        // Read from the database
+        mDatabaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                Log.d("", "onChildChanged:" + dataSnapshot.getKey());
+                sections.clear();
+                 childList.clear();
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+
+                    AlaramData    alaramData =  postSnapshot.getValue(AlaramData.class);
+                   int x = 0;
+                    // here you can access to name property like university.name
+                    childList.add(alaramData);
+                }
+
+
+                Log.d("", "Value is: " + childList);
+                //Create a List of Section DataModel implements Section
+
+                sections.add(new SectionHeader(childList, "2018", 1));
+                adapterRecycler.notifyDataChanged(sections);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w("", "Failed to read value.", error.toException());
+            }
+        });
+
+
+
+        adapterRecycler = new AdapterSectionRecycler(getActivity(), sections);
+        recyclerView.setAdapter(adapterRecycler);
+        /*List<AlaramData> childList = new ArrayList<>();
 
         for (int i = 0; i < 15; i++) {
             AlaramData dummy = new AlaramData();
@@ -82,15 +135,9 @@ public class AlaramFragment extends Fragment {
 
             childList.add(dummy);
         }
+*/
 
 
-        //Create a List of Section DataModel implements Section
-        List<SectionHeader> sections = new ArrayList<>();
-        sections.add(new SectionHeader(childList, "2018", 1));
-
-
-        adapterRecycler = new AdapterSectionRecycler(getActivity(), sections);
-        recyclerView.setAdapter(adapterRecycler);
 
 
         return mView;

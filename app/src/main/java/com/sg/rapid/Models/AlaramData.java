@@ -2,7 +2,7 @@ package com.sg.rapid.Models;
 
 public class AlaramData {
 
-    private String year;
+
     private String date;
     private String time;
     private String title;
@@ -12,14 +12,6 @@ public class AlaramData {
 
     private String status;
 
-
-    public String getYear() {
-        return year;
-    }
-
-    public void setYear(String year) {
-        this.year = year;
-    }
 
     public String getDate() {
         return date;
