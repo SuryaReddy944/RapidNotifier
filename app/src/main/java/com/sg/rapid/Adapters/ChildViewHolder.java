@@ -2,6 +2,7 @@ package com.sg.rapid.Adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.sg.rapid.Fragments.NotificationsFragment;
@@ -16,6 +17,7 @@ public class ChildViewHolder extends RecyclerView.ViewHolder {
     public TextView date,time,title,description,info,circle,verticleline;
     public View mCircle,mLine;
 
+
     public ChildViewHolder(View itemView) {
         super(itemView);
         date  = (TextView) itemView.findViewById(R.id.lbldate);
@@ -25,6 +27,7 @@ public class ChildViewHolder extends RecyclerView.ViewHolder {
         info = (TextView) itemView.findViewById(R.id.lblinfo);
         circle = (TextView) itemView.findViewById(R.id.viewcircle);
         verticleline = (TextView) itemView.findViewById(R.id.verticalline);
+
 
         //fonts
 

@@ -6,10 +6,10 @@
         android:icon="@drawable/ic_homesvg"
         android:title="@string/title_home" />
 
-    <item
+   <!-- <item
         android:id="@+id/navigation_notifications"
         android:icon="@drawable/ic_notificationsvg"
-        android:title="@string/title_notifications" />
+        android:title="@string/title_notifications" />-->
 
     <item
         android:id="@+id/navigation_explore"

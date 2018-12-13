@@ -12,12 +12,18 @@ public class CustomFonts {
 
     public static Typeface getNexaBold(Context mContext){
 
-        mTypeface = Typeface.createFromAsset(mContext.getAssets(),"fontfabric-nexa-bold.ttf");
+        mTypeface = Typeface.createFromAsset(mContext.getAssets(),"segoeu.ttf");
         return mTypeface;
     }
 
 
     public static Typeface getNexaRegular(Context mContext){
+
+        mTypeface = Typeface.createFromAsset(mContext.getAssets(),"segoeu.ttf");
+        return mTypeface;
+    }
+
+    public static Typeface geRegular(Context mContext){
 
         mTypeface = Typeface.createFromAsset(mContext.getAssets(),"fontfabric-nexa-regular.ttf");
         return mTypeface;

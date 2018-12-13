@@ -1,15 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
     android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:textColor="@color/block"
-        android:text="Profile"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
 
-</RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/grey"
+        android:orientation="horizontal">
+        <TextView
+            android:text="My profile"
+            android:id="@+id/label"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:textColor="@color/block"
+            android:textSize="14dp"
+            android:layout_gravity="center|start"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+
+        android:gravity="center|start"
+        android:orientation="horizontal">
+       <Button
+           android:text="Update profile"
+           android:id="@+id/updateprofile"
+           android:background="@drawable/button_shapes"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+
+        android:gravity="center|start"
+        android:orientation="horizontal">
+        <Button
+            android:text="Update password"
+            android:id="@+id/updatepass"
+            android:layout_width="match_parent"
+            android:background="@drawable/button_shapes"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+
+        android:gravity="center|start"
+        android:orientation="horizontal">
+        <Button
+            android:text="Log out"
+            android:id="@+id/logout"
+            android:background="@drawable/button_shapes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+</LinearLayout>

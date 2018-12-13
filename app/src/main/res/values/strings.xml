@@ -2,12 +2,13 @@
     <string name="app_name">RapidNotifier</string>
 
 
-
-        <string name="title_home">Home</string>
-        <string name="title_notifications">Notifications</string>
-        <string name="title_explore">Explore</string>
+    <string name="title_home">Home</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_explore">Explore</string>
     <string name="title_reports">Reports</string>
-        <string name="title_profile">Profile</string>
-
+    <string name="title_profile">Profile</string>
+    <string name="error_field_required">This field is required...</string>
+    <string name="error_password_match">Passwords are not the same</string>
+    <string name="noconnection">Please check your internet connection and try again.</string>
 
 </resources>

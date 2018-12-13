@@ -1,37 +1,73 @@
 package com.sg.rapid.Fragments;
 
+import android.animation.ValueAnimator;
+import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+
+import com.sg.rapid.AcknowledgeServices.AckInfo;
+import com.sg.rapid.AcknowledgeServices.AlaramAcknowledgeService;
+import com.sg.rapid.Activity.AlaramDetailedPage;
+import com.sg.rapid.Activity.ChangePassword;
+import com.sg.rapid.Activity.HomePage;
 import com.sg.rapid.Adapters.AdapterSectionRecycler;
 import com.sg.rapid.Adapters.SectionHeader;
-import com.sg.rapid.Models.AlaramData;
+import com.sg.rapid.AlaramService.AlaramResponse;
+import com.sg.rapid.AlaramService.AlaramServices;
+import com.sg.rapid.CallBacks.RecyclerTouchListener;
+import com.sg.rapid.CallBacks.RecyclerViewClickListener;
+import com.sg.rapid.CallBacks.ResponseListner;
+import com.sg.rapid.CustomControllers.SwipeController;
+import com.sg.rapid.CustomControllers.SwipeControllerActions;
+
+import com.sg.rapid.Models.AlaramsRequest;
 import com.sg.rapid.R;
+import com.sg.rapid.Utilities.CustomFonts;
+import com.sg.rapid.Utilities.Helper;
+import com.sg.rapid.Utilities.SpinnerManager;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Response;
 
 public class AlaramFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private AdapterSectionRecycler adapterRecycler;
-    private FirebaseDatabase mFirebaseDatabase ;
-    private DatabaseReference mDatabaseReference;
     private  List<SectionHeader> sections;
-    private   List<AlaramData> childList ;
+    private   List<AlaramResponse> childList ;
+    private SwipeController swipeController;
+    private LinearLayoutManager linearLayoutManager;
+    private boolean loading = true;
+    private boolean isack = false;
+    int pastVisiblesItems, visibleItemCount, totalItemCount;
+    public int startNo = 1;
+    public int endNo = 10;
+    public int minposition = 1;
+    public  int maxposition = endNo;
+    final int initialViewHeight = NotificationsFragment.lltopsection.getLayoutParams().height;
+
 
     @Nullable
     @Override
@@ -40,106 +76,379 @@ public class AlaramFragment extends Fragment {
         //initialize RecyclerView
         recyclerView = (RecyclerView) mView.findViewById(R.id.recycler_view);
         //setLayout Manager
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+         linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
         sections = new ArrayList<>();
         childList = new ArrayList<>();
 
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mDatabaseReference = mFirebaseDatabase.getReference();
+        adapterRecycler = new AdapterSectionRecycler(getActivity(), sections);
+        recyclerView.setAdapter(adapterRecycler);
+       AlaramsRequest  alaramsRequest  = new AlaramsRequest();
+       alaramsRequest.setStartNo(startNo);
+       alaramsRequest.setEndNo(endNo);
+       if(Helper.hasNetworkConnection(getActivity())) {
+           getAlarams(getActivity(), alaramsRequest);
+       }else {
+           Toast.makeText(getActivity(), R.string.noconnection,Toast.LENGTH_LONG).show();
 
-
-        // Read from the database
-        mDatabaseReference.addValueEventListener(new ValueEventListener() {
+       }
+        swipeController = new SwipeController(getActivity(), new SwipeControllerActions() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                Log.d("", "onChildChanged:" + dataSnapshot.getKey());
-                sections.clear();
-                 childList.clear();
-                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-
-                    AlaramData    alaramData =  postSnapshot.getValue(AlaramData.class);
-                   int x = 0;
-                    // here you can access to name property like university.name
-                    childList.add(alaramData);
+            public void onRightClicked(int position) {
+                AlaramResponse mAlaramResponse = childList.get(position-1);
+                if(mAlaramResponse.getAcknowledgeNotes() == null){
+                    NotesDialog mDialog = new NotesDialog(getActivity(),mAlaramResponse.getAlarmLogId());
+                    mDialog.show();
+                }else{
+                    Toast.makeText(getActivity(),"Already acknowledged",Toast.LENGTH_LONG).show();
                 }
-
-
-                Log.d("", "Value is: " + childList);
-                //Create a List of Section DataModel implements Section
-
-                sections.add(new SectionHeader(childList, "2018", 1));
-                adapterRecycler.notifyDataChanged(sections);
 
             }
 
             @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                Log.w("", "Failed to read value.", error.toException());
+            public void onLeftClicked(int position) {
+               // Toast.makeText(getActivity(),"Ack  clicked",Toast.LENGTH_LONG).show();
+                AlaramResponse mAlaramResponse = childList.get(position-1);
+                if(mAlaramResponse.getAcknowledgeNotes() == null){
+                    AckInfo mAckInfo = new AckInfo();
+                    mAckInfo.setID(String.valueOf(mAlaramResponse.getAlarmLogId()));
+                    mAckInfo.setQType("ackalarms");
+                    mAckInfo.setAckNotes("");
+                    if(Helper.hasNetworkConnection(getActivity())) {
+                        sendAlaramAck(getActivity(), mAckInfo);
+                    }else {
+                        Toast.makeText(getActivity(), R.string.noconnection,Toast.LENGTH_LONG).show();
+
+                    }
+
+                }else{
+                    Toast.makeText(getActivity(),"Already acknowledged",Toast.LENGTH_LONG).show();
+                }
+
+            }
+        });
+
+        ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeController);
+        itemTouchhelper.attachToRecyclerView(recyclerView);
+
+
+        recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+                swipeController.onDraw(c);
+            }
+        });
+
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getActivity(),
+                recyclerView, new RecyclerViewClickListener() {
+            @Override
+            public void onClick(View view, final int position) {
+                //Values are passing to activity & to fragment as well
+                 Log.e("size",""+childList.size());
+                Intent detailed = new Intent(getActivity(), AlaramDetailedPage.class);
+                detailed.putExtra("alaramInfo",childList.get(position-1));
+                startActivity(detailed);
+                getActivity().overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left);
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
+
+        //pagination
+
+
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
+        {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
+
+            {
+                ValueAnimator animator = ValueAnimator.ofInt(0, 1);
+                if (dy > 0 ) {
+
+                    HomePage.navigation.setVisibility(View.GONE);
+                    //Getting actual yourViewToHide params
+                    ViewGroup.LayoutParams params = NotificationsFragment.lltopsection.getLayoutParams();
+                    if (!animator.isRunning()) {
+                        //Setting animation from actual value to the target value (here 0, because we're hiding the view)
+                        animator.setIntValues(params.height, 0);
+                        //Animation duration
+                        animator.setDuration(1);
+                        //In this listener we update the view
+                        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                            @Override
+                            public void onAnimationUpdate(ValueAnimator animation) {
+                                ViewGroup.LayoutParams params = NotificationsFragment.lltopsection.getLayoutParams();
+                                params.height = (int) animation.getAnimatedValue();
+                                NotificationsFragment.lltopsection.setLayoutParams(params);
+                            }
+                        });
+                        //Starting the animation
+                        animator.start();
+
+                    }
+
+                } else if (dy < 0 ) {
+                    HomePage.navigation.setVisibility(View.VISIBLE);
+                    ViewGroup.LayoutParams params = NotificationsFragment.lltopsection.getLayoutParams();
+                    if (!animator.isRunning()) {
+                        //Setting animation from actual value to the initial yourViewToHide height)
+                        animator.setIntValues(params.height, initialViewHeight);
+                        //Animation duration
+                        animator.setDuration(1);
+                        //In this listener we update the view
+                        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                            @Override
+                            public void onAnimationUpdate(ValueAnimator animation) {
+                                ViewGroup.LayoutParams params = NotificationsFragment.lltopsection.getLayoutParams();
+                                params.height = (int) animation.getAnimatedValue();
+                                NotificationsFragment.lltopsection.setLayoutParams(params);
+                            }
+                        });
+                        //Starting the animation
+                        animator.start();
+
+                    }
+
+
+                }
+
+
+
+
+                if(dy > 0) //check for scroll down
+                {
+                    visibleItemCount = linearLayoutManager.getChildCount();
+                    totalItemCount = linearLayoutManager.getItemCount();
+                    pastVisiblesItems = linearLayoutManager.findFirstVisibleItemPosition();
+
+                    if (loading)
+                    {
+                        if ( (visibleItemCount + pastVisiblesItems) >= totalItemCount)
+                        {
+                            loading = false;
+                            Log.v("...", "Last Item Wow !");
+                            startNo = endNo + 1;
+                            endNo = endNo + 10;
+                            maxposition = endNo;
+                            AlaramsRequest  alaramsRequest  = new AlaramsRequest();
+                            alaramsRequest.setStartNo(startNo);
+                            alaramsRequest.setEndNo(endNo);
+                            if(Helper.hasNetworkConnection(getActivity())) {
+                                getAlarams(getActivity(), alaramsRequest);
+                            }else {
+                                Toast.makeText(getActivity(), R.string.noconnection,Toast.LENGTH_LONG).show();
+
+                            }
+
+                        }
+                    }
+                }
+
+
+            }
+
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
             }
         });
 
 
-
-        adapterRecycler = new AdapterSectionRecycler(getActivity(), sections);
-        recyclerView.setAdapter(adapterRecycler);
-        /*List<AlaramData> childList = new ArrayList<>();
-
-        for (int i = 0; i < 15; i++) {
-            AlaramData dummy = new AlaramData();
-
-            if (i == 0) {
-                dummy.setDate("24 Oct");
-                dummy.setTime("07:45:32");
-                dummy.setTitle("AHU 1-1 Trip Alarm");
-                dummy.setDescription("AHU 1-1 Tripped");
-                dummy.setStatus("normal");
-                dummy.setInfo("Tripped");
-            } else if (i == 1) {
-                dummy.setDate("");
-                dummy.setTime("05:32:59");
-                dummy.setTitle("MFGR Room Temp High");
-                dummy.setDescription("Manufacturing Room Temp High Alarm\n" +
-                        "ACKED 07:31:02 by Jernigan Loh\n" +
-                        "NOTES: Production Operator left door ajar. Informed\n" +
-                        "Shift supervisor to close door.");
-                dummy.setStatus("low");
-                dummy.setInfo("22.6 °C");
-            } else if (i == 2) {
+        return mView;
+    }
 
 
-                dummy.setDate("12 Sep");
-                dummy.setTime("07:45:32");
-                dummy.setTitle("CH-1 DP Rtn to Normal");
-                dummy.setDescription("Chiller 1 Differential Pressure Return to Normal\n" +
-                        "ACKED 14:34:02 by Ginda Pohan");
-                dummy.setStatus("high");
-                dummy.setInfo("8.61 kPa");
+    private void getAlarams(final Context mContext ,AlaramsRequest alaramsRequest ){
+        SpinnerManager.showSpinner(mContext,"Loading...");
+        AlaramServices.fetchAlarams(alaramsRequest,new ResponseListner() {
+            @Override
+            public void onSucess(Object response, int sttuscode) {
+                SpinnerManager.hideSpinner(mContext);
+                sections.clear();
+                Response<List<AlaramResponse>> mRes = (Response<List<AlaramResponse>>)response;
+                List<AlaramResponse> mData = mRes.body();
+                //childList.clear();
+                 if(isack){
+                     childList.clear();
+                 }
+                 isack = false;
+                 if(mData.size() > 2){
+                     childList.addAll(mData);
+                     loading = true;
+                 }else{
+                     loading = false;
+                     Toast.makeText(mContext,"No Alarm Record Found.",Toast.LENGTH_LONG).show();
 
+                 }
+                NotificationsFragment.lblalaramcount.setText(String.valueOf(childList.size()));
+                sections.add(new SectionHeader(childList, "2018", 1));
+                adapterRecycler.notifyDataChanged(sections);
 
-            } else {
-
-                dummy.setDate("12 Sep");
-                dummy.setTime("07:45:32");
-                dummy.setTitle("CH-1 DP Rtn to Normal");
-                dummy.setDescription("Chiller 1 Differential Pressure Return to Normal\n" +
-                        "ACKED 14:34:02 by Ginda Pohan");
-                dummy.setStatus("low");
-                dummy.setInfo("8.61 kPa");
 
             }
 
-            childList.add(dummy);
-        }
-*/
+            @Override
+            public void onFailure(Throwable error) {
+                SpinnerManager.hideSpinner(mContext);
+                error.printStackTrace();
+            }
 
-
-
-
-        return mView;
+            @Override
+            public void failureResponse(Object response) {
+                SpinnerManager.hideSpinner(mContext);
+            }
+        });
     }
+
+
+    private void sendAlaramAck(final Context context, final AckInfo ackInfo){
+        SpinnerManager.showSpinner(context,"Loading...");
+        AlaramAcknowledgeService.ackAlaram(ackInfo, new ResponseListner() {
+            @Override
+            public void onSucess(Object response, int sttuscode) {
+                SpinnerManager.hideSpinner(context);
+                Toast.makeText(context,"Acknowledgement sent",Toast.LENGTH_LONG).show();
+                AlaramsRequest  alaramsRequest  = new AlaramsRequest();
+                alaramsRequest.setStartNo(minposition);
+                alaramsRequest.setEndNo(maxposition);
+                isack = true;
+                getAlarams(context,alaramsRequest);
+            }
+
+            @Override
+            public void onFailure(Throwable error) {
+                SpinnerManager.hideSpinner(context);
+                 error.printStackTrace();
+            }
+
+            @Override
+            public void failureResponse(Object response) {
+                SpinnerManager.hideSpinner(context);
+                Toast.makeText(context,"Acknowledgement failed please try again",Toast.LENGTH_LONG).show();
+            }
+        });
+
+    }
+
+    public class NotesDialog extends Dialog implements
+            View.OnClickListener {
+
+
+        public Activity c;
+        public Dialog d;
+        private int mId;
+        private TextView mTitle,mDes;
+        private EditText mNotes;
+        private Button mCancel,mGo;
+        public NotesDialog(Activity a,int id) {
+            super(a);
+            // TODO Auto-generated constructor stub
+            this.c = a;
+            this.mId = id;
+        }
+
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            requestWindowFeature(Window.FEATURE_NO_TITLE);
+            setContentView(R.layout.ack_notes_layout);
+            initViews();
+            applyFonts();
+
+
+
+        }
+
+        private void initViews() {
+            mTitle = (TextView)findViewById(R.id.promotitle);
+            mDes = (TextView)findViewById(R.id.promodes);
+            mNotes = (EditText)findViewById(R.id.apppromocode);
+            mCancel = (Button)findViewById(R.id.buttoncancel);
+            mGo = (Button)findViewById(R.id.buttongo);
+            mCancel.setOnClickListener(this);
+            mGo.setOnClickListener(this);
+
+
+
+        }
+
+        private void applyFonts() {
+            mTitle.setTypeface(CustomFonts.getNexaBold(c));
+            mDes.setTypeface(CustomFonts.getNexaRegular(c));
+            mNotes.setTypeface(CustomFonts.getNexaRegular(c));
+            mCancel.setTypeface(CustomFonts.getNexaRegular(c));
+            mGo.setTypeface(CustomFonts.getNexaRegular(c));
+        }
+
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+
+                case R.id.buttoncancel:
+                    dismiss();
+                    break;
+                case R.id.buttongo:
+                    String notes = mNotes.getText().toString();
+                    AckInfo mAckInfo = new AckInfo();
+                    mAckInfo.setID(String.valueOf(mId));
+                    mAckInfo.setQType("ackalarms");
+                    mAckInfo.setAckNotes(notes);
+                    if(Helper.hasNetworkConnection(c)) {
+                        sendAlaramAck(c, mAckInfo);
+                    }else {
+                        Toast.makeText(getActivity(), R.string.noconnection,Toast.LENGTH_LONG).show();
+
+                    }
+
+                    break;
+
+
+                default:
+                    break;
+            }
+            //dismiss();
+        }
+
+        private void sendAlaramAck(final Context context, final AckInfo ackInfo){
+            SpinnerManager.showSpinner(context,"Loading...");
+            AlaramAcknowledgeService.ackAlaram(ackInfo, new ResponseListner() {
+                @Override
+                public void onSucess(Object response, int sttuscode) {
+                    SpinnerManager.hideSpinner(context);
+                    dismiss();
+                    Toast.makeText(context,"Acknowledgement sent",Toast.LENGTH_LONG).show();
+                    AlaramsRequest  alaramsRequest  = new AlaramsRequest();
+                    alaramsRequest.setStartNo(minposition);
+                    alaramsRequest.setEndNo(maxposition);
+                    isack = true;
+                    getAlarams(context,alaramsRequest);
+
+                }
+
+                @Override
+                public void onFailure(Throwable error) {
+                    SpinnerManager.hideSpinner(context);
+                    dismiss();
+                    error.printStackTrace();
+                }
+
+                @Override
+                public void failureResponse(Object response) {
+                    SpinnerManager.hideSpinner(context);
+                    dismiss();
+                    Toast.makeText(context,"Acknowledgement failed please try again",Toast.LENGTH_LONG).show();
+                }
+            });
+
+        }
+
+    }
+
+
 }

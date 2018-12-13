@@ -2,13 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sg.rapid">
 
+    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/message"
         android:label="@string/app_name"
         android:roundIcon="@drawable/message"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme.NoActionBar">
 
         <!-- Splash screen -->
         <activity
@@ -23,15 +25,52 @@
             </intent-filter>
         </activity>
         <activity android:name=".Activity.LoginScreen"
-            android:theme="@style/Theme.AppCompat.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar" >
         </activity>
 
         <activity android:name=".Activity.HomePage"
-            android:theme="@style/Theme.AppCompat.NoActionBar" >
+            android:screenOrientation="portrait"
+            android:configChanges="orientation"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+
+        <activity android:name=".Activity.AlaramDetailedPage"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+
+        <activity android:name=".Activity.EventDeatilsPage"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+        <activity android:name=".Activity.UpdateProfile"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+
+        <activity android:name=".Activity.ChangePassword"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation"
+            android:theme="@style/AppTheme.NoActionBar" >
         </activity>
 
 
+        <!-- Firebase Notifications -->
+        <service android:name=".FireBaseServices.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
 
+        <service android:name=".FireBaseServices.MyFirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+        <!-- ./Firebase Notifications -->
 
 
     </application>

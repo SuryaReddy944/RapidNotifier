@@ -11,6 +11,6 @@
        android:layout_height="match_parent"
        android:scaleType="center"
        android:layout_gravity="center"
-       android:background="@drawable/rapid_logo"/>
+       android:background="@drawable/splashlogo"/>
 
 </LinearLayout>

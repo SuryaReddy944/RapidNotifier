@@ -11,9 +11,10 @@
 <color name="non_tab">#BFBFBF</color>
     <color name="colorNavIcon">#dae9f6</color>
     <color name="colorNavText">#01294b</color>
-    <color name="green">#00B4B4</color>
-    <color name="yellow">#FFC397</color>
+    <color name="green">#008000</color>
+    <color name="yellow">#FFFF00</color>
     <color name="red">#FF0000</color>
+    <color name="orange">#ffa500 </color>
     <color name="no_selected_tab">#777171</color>
     <color name="tab_boarder">#5EA2DD</color>
     <color name="bottom_navi_back">#F7F7F7</color>

@@ -9,14 +9,34 @@
 
     <LinearLayout
         android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/grey"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:text="RapidNotifier"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:id="@+id/title"
+            android:textColor="@color/white"
+            android:textSize="14dp"
+            android:layout_gravity="center"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:orientation="vertical"
         android:padding="10dp"
+        android:id="@+id/layouttopsection"
+        android:visibility="visible"
         android:layout_height="150dp">
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:orientation="horizontal">
 
             <android.support.v4.view.ViewPager
@@ -34,7 +54,6 @@
                 android:src="@drawable/right_arrow" />
 
         </FrameLayout>
-
 
         <android.support.v4.view.ViewPager
             android:id="@+id/viewPager"
@@ -78,8 +97,9 @@
                 android:layout_height="20dp"
                 android:layout_marginLeft="5dp"
                 android:background="@drawable/alaram_count"
-                android:gravity="center"
-                android:text="6"
+               android:gravity="center"
+                android:text=""
+
                 android:textColor="@color/white" />
 
         </LinearLayout>
@@ -107,8 +127,9 @@
                 android:layout_height="20dp"
                 android:layout_marginLeft="5dp"
                 android:background="@drawable/non_selected_count"
+
+                android:text=""
                 android:gravity="center"
-                android:text="6"
                 android:textColor="@color/white" />
 
         </LinearLayout>

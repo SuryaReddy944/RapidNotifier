@@ -1,10 +1,12 @@
 package com.sg.rapid.Activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 
+import com.sg.rapid.FireBaseServices.Config;
 import com.sg.rapid.R;
 /**
  * Created by Surya on 24-10-2018.
@@ -12,13 +14,15 @@ import com.sg.rapid.R;
 public class SplashScreen extends AppCompatActivity {
 
     // Splash screen timer
-    private static int SPLASH_TIME_OUT = 3000;
+    private static int SPLASH_TIME_OUT = 10;
+    private  static SharedPreferences pref;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash_screen);
+        pref  = getApplicationContext().getSharedPreferences(Config.SHARED_PREF, 0);
 
         new Handler().postDelayed(new Runnable() {
 
@@ -31,13 +35,26 @@ public class SplashScreen extends AppCompatActivity {
             public void run() {
                 // This method will be executed once the timer is over
                 // Start your app main activity
-                Intent i = new Intent(SplashScreen.this, LoginScreen.class);
-                startActivity(i);
+                String accesstoken = pref.getString("token","");
+                if(accesstoken !=null && !accesstoken.equalsIgnoreCase("")){
+                    Intent homepage = new Intent(SplashScreen.this,HomePage.class);
+                    startActivity(homepage);
+                    finish();
+                }else{
+                    Intent i = new Intent(SplashScreen.this, LoginScreen.class);
+                    startActivity(i);
+                    // close this activity
+                    finish();
+                }
 
-                // close this activity
-                finish();
             }
         }, SPLASH_TIME_OUT);
+    }
+
+    public  static String getAccessToken(){
+        String token = "";
+        token = pref.getString("token","");
+        return token;
     }
 
 }

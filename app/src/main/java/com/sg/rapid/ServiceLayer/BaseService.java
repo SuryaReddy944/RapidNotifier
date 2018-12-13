@@ -1,7 +1,11 @@
 package com.sg.rapid.ServiceLayer;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.sg.rapid.Activity.LoginScreen;
+import com.sg.rapid.Activity.SplashScreen;
 
 import java.io.IOException;
 
@@ -18,7 +22,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 public class BaseService {
-    protected static final String PROD_BASE_URL = "https://api.rapid.com/v1/";
+    protected static final String PROD_BASE_URL = "https://ibmsaev2.azurewebsites.net/api/User/";
     protected static HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY);
     protected static TokenInterceptor tokenInterceptor = new TokenInterceptor();
     protected static OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).addInterceptor(tokenInterceptor).build();
@@ -46,12 +50,12 @@ public class BaseService {
         public Response intercept(Chain chain) throws IOException {
             Request initialRequest = chain.request();
 
-            String sToken = "";
-            if (sToken != null) {
+            String sToken = SplashScreen.getAccessToken();
+
+            if (sToken != null && sToken !="") {
+
                 initialRequest = initialRequest.newBuilder()
-                        .addHeader("X-Device","Android")
-                        .addHeader("X-Api-Key","C159CC74ECA31")
-                        .addHeader("X-Api-Secret","cKD0lPmr8ZnCf02ZaUi52bK6eHCVc2ip")
+                        .addHeader("Authorization","Bearer " + sToken)
                         .build();
             }
 

@@ -18,6 +18,7 @@ import com.sg.rapid.R;
 
 public class HomePage extends AppCompatActivity  implements BottomNavigationView.OnNavigationItemSelectedListener {
 
+    public static BottomNavigationView navigation;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,10 +28,9 @@ public class HomePage extends AppCompatActivity  implements BottomNavigationView
         loadFragment(new NotificationsFragment());
 
         //getting bottom navigation view and attaching the listener
-        BottomNavigationView navigation = findViewById(R.id.navigation);
+        navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);
-        View view = navigation.findViewById(R.id.navigation_notifications);
-        view.performClick();
+
     }
 
     @Override
@@ -39,10 +39,6 @@ public class HomePage extends AppCompatActivity  implements BottomNavigationView
 
         switch (menuItem.getItemId()) {
             case R.id.navigation_home:
-                fragment = new HomeFragment();
-                break;
-
-            case R.id.navigation_notifications:
                 fragment = new NotificationsFragment();
                 break;
 

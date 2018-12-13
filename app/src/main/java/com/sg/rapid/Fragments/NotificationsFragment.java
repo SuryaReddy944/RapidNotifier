@@ -26,11 +26,13 @@ import java.util.List;
 public class NotificationsFragment extends Fragment {
 
     private LinearLayout llalaram,llevents,llfilter;
-    private TextView lblalaram,lblalaramcount,lblevents,lbleventcount,lblfilter;
+    public static LinearLayout lltopsection;
+    private TextView lblalaram,lblevents,lblfilter;
+    public static TextView lblalaramcount,lbleventcount,lbltitle;
     public static Context mContext;
     private ArrayList<Notify> mNotidata;
     private NotificationAdapter mAdapter;
-    private ViewPager mViewPager;
+    public static ViewPager mViewPager;
 
     @Nullable
     @Override
@@ -65,7 +67,8 @@ public class NotificationsFragment extends Fragment {
         llalaram = (LinearLayout)view.findViewById(R.id.llalaram);
         llevents = (LinearLayout)view.findViewById(R.id.llevents);
         llfilter = (LinearLayout)view.findViewById(R.id.llfilter);
-
+        lltopsection = (LinearLayout)view.findViewById(R.id.layouttopsection);
+        lbltitle = (TextView)view.findViewById(R.id.title);
         lblalaram = (TextView)view.findViewById(R.id.lblalaram);
         lblalaramcount = (TextView)view.findViewById(R.id.lblalaramcount);
         lblevents = (TextView)view.findViewById(R.id.lbevents);
@@ -79,10 +82,12 @@ public class NotificationsFragment extends Fragment {
 
         //apply fonts
         lblalaram.setTypeface(CustomFonts.getNexaRegular(getActivity()));
-        lblalaramcount.setTypeface(CustomFonts.getNexaRegular(getActivity()));
+        lblalaramcount.setTypeface(CustomFonts.geRegular(getActivity()));
         lblevents.setTypeface(CustomFonts.getNexaRegular(getActivity()));
-        lbleventcount.setTypeface(CustomFonts.getNexaRegular(getActivity()));
+        lbleventcount.setTypeface(CustomFonts.geRegular(getActivity()));
         lblfilter.setTypeface(CustomFonts.getNexaRegular(getActivity()));
+        lbltitle.setTypeface(CustomFonts.getNexaRegular(getActivity()));
+
 
     }
 
