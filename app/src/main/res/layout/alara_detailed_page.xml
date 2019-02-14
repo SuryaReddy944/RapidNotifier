@@ -1,140 +1,228 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/grey"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:orientation="horizontal">
-        <ImageView
-            android:id="@+id/backbutton"
-            android:src="@drawable/btn_back"
-            android:layout_width="30dp"
-            android:layout_marginLeft="10dp"
-            android:layout_height="30dp" />
-        <TextView
-            android:text="@string/app_name"
-            android:layout_width="match_parent"
-            android:gravity="center"
-            android:id="@+id/title"
-            android:textColor="@color/white"
-            android:textSize="14dp"
-            android:layout_gravity="center"
-            android:layout_height="match_parent" />
-    </LinearLayout>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activity.HomePage">
 
     <LinearLayout
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:text="laskdjasldjkdlask"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:id="@+id/headerlayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <include
+                layout="@layout/comman_header"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:padding="10dp">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:padding="5dp"
 
-            <TextView
-                android:id="@+id/alaramname"
-                android:text="AlaramName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/lbltitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Alarm Details:" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:padding="5dp"
+                android:gravity="center"
+                android:background="@drawable/button_shapes"
+                android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/colorcircle"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/fullcircle_red"
+                    android:text="" />
+
+                <TextView
+                    android:id="@+id/lblpriority"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="High priority" />
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/alaramtype"
-                android:text="Alaram Type"
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:orientation="vertical"
+               android:background="@drawable/layout_back"
+               android:layout_marginLeft="10dp"
+               android:layout_marginRight="10dp"
+               android:layout_height="wrap_content">
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:orientation="horizontal"
+                   android:padding="5dp">
+
+                   <TextView
+                       android:id="@+id/alaramname"
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:text="AlaramName" />
+               </LinearLayout>
+
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:orientation="horizontal"
+                   android:padding="5dp">
+
+                   <TextView
+                       android:id="@+id/alaramtype"
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:text="Alaram Type" />
+               </LinearLayout>
+
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:orientation="horizontal"
+                   android:padding="5dp">
+
+                   <TextView
+                       android:id="@+id/alaramdescription"
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:text="Description" />
+               </LinearLayout>
+
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:orientation="horizontal"
+                   android:padding="5dp">
+
+                   <TextView
+                       android:id="@+id/createddate"
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:text="Create Date" />
+               </LinearLayout>
+
+               
+           </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:padding="10dp"
+                android:id="@+id/llacktitle"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/lblackdetails"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Acknowledgement Details:" />
+            </LinearLayout>
+
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:orientation="vertical"
+               android:id="@+id/acklayout"
+               android:layout_marginRight="10dp"
+               android:background="@drawable/layout_back"
+               android:layout_marginLeft="10dp"
+               android:layout_height="wrap_content">
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:orientation="horizontal"
+                   android:padding="5dp">
+
+                   <TextView
+                       android:id="@+id/ackby"
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:text="Acknowledgement By" />
+               </LinearLayout>
+
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:orientation="horizontal"
+                   android:padding="5dp">
+
+                   <TextView
+                       android:id="@+id/ackdateandtime"
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:text="Acknowledgement on:" />
+               </LinearLayout>
+
+
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:orientation="horizontal"
+                   android:padding="5dp">
+
+                   <TextView
+                       android:id="@+id/notesdata"
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:text="Notes" />
+               </LinearLayout>
+           </LinearLayout>
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/alaramdescription"
-                android:text="Description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/createddate"
-                android:text="Create Date"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/cretaedtime"
-                android:text="Created Time"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/notesdata"
-                android:text="Acknowledgement Notes :"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/ackdate"
-                android:text="Acknowledgement date :"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/acktime"
-                android:text="Acknowledgement time:"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-
 
 
     </LinearLayout>
 
-</LinearLayout>
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/navigationdetailed"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:theme="@style/Widget.BottomNavigationView"
+        android:background="@color/topheader"
+        app:itemIconTint="@drawable/navi_selector"
+        app:itemTextColor="@color/white"
+        app:labelVisibilityMode="labeled"
+        app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:menu="@menu/navigation" />
+
+</android.support.constraint.ConstraintLayout>

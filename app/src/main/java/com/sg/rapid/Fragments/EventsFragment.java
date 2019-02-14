@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -30,6 +31,8 @@ import com.sg.rapid.Activity.HomePage;
 import com.sg.rapid.CallBacks.RecyclerTouchListener;
 import com.sg.rapid.CallBacks.RecyclerViewClickListener;
 import com.sg.rapid.CallBacks.ResponseListner;
+import com.sg.rapid.CountServices.CountService;
+import com.sg.rapid.CountServices.EventCountResponse;
 import com.sg.rapid.CustomControllers.SwipeController;
 import com.sg.rapid.CustomControllers.SwipeControllerActions;
 import com.sg.rapid.EventServices.EventService;
@@ -47,7 +50,9 @@ import java.util.List;
 
 import retrofit2.Response;
 
-public class EventsFragment extends Fragment {
+import static com.sg.rapid.Fragments.NotificationsFragment.lbleventcount;
+
+public class EventsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
 
     private RecyclerView recyclerView;
     private EventSectionAdapter adapterRecycler;
@@ -60,10 +65,11 @@ public class EventsFragment extends Fragment {
     private boolean isack = false;
     int pastVisiblesItems, visibleItemCount, totalItemCount;
     public int startNo = 1;
-    public int endNo = 10;
+    public int endNo = 20;
     public int minposition = 1;
-    public  int maxposition = endNo;
+    public int maxposition = endNo;
     final int initialViewHeight = NotificationsFragment.lltopsection.getLayoutParams().height;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
 
     @Nullable
@@ -80,16 +86,19 @@ public class EventsFragment extends Fragment {
         sections = new ArrayList<>();
         childList = new ArrayList<>();
 
+        mSwipeRefreshLayout = (SwipeRefreshLayout)mView.findViewById(R.id.swipe_container) ;
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+
         adapterRecycler = new EventSectionAdapter(getActivity(), sections);
         recyclerView.setAdapter(adapterRecycler);
 
         AlaramsRequest alaramsRequest = new AlaramsRequest();
         alaramsRequest.setStartNo(startNo);
         alaramsRequest.setEndNo(endNo);
-        if(Helper.hasNetworkConnection(getActivity())) {
+        if (Helper.hasNetworkConnection(getActivity())) {
             getEvents(getActivity(), alaramsRequest);
-        }else {
-            Toast.makeText(getActivity(), R.string.noconnection,Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(getActivity(), R.string.noconnection, Toast.LENGTH_LONG).show();
 
         }
 
@@ -100,7 +109,7 @@ public class EventsFragment extends Fragment {
 
                 EventsResponse mEventsResponse = childList.get(position - 1);
                 if (mEventsResponse.getAcknowledgeNotes() == null) {
-                    EventNotesDialog mDialog = new EventNotesDialog(getActivity(), mEventsResponse.getEventLogId());
+                    EventNotesDialog mDialog = new EventNotesDialog(getActivity(), mEventsResponse.getEventLogId(),mEventsResponse);
                     mDialog.show();
                 } else {
                     Toast.makeText(getActivity(), "Already acknowledged", Toast.LENGTH_LONG).show();
@@ -116,10 +125,10 @@ public class EventsFragment extends Fragment {
                     mAckInfo.setID(String.valueOf(mEventsResponse.getEventLogId()));
                     mAckInfo.setQType("ackevents");
                     mAckInfo.setAckNotes("");
-                    if(Helper.hasNetworkConnection(getActivity())) {
+                    if (Helper.hasNetworkConnection(getActivity())) {
                         sendEventAck(getActivity(), mAckInfo);
-                    }else {
-                        Toast.makeText(getActivity(), R.string.noconnection,Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getActivity(), R.string.noconnection, Toast.LENGTH_LONG).show();
 
                     }
                 } else {
@@ -144,11 +153,15 @@ public class EventsFragment extends Fragment {
             @Override
             public void onClick(View view, final int position) {
                 //Values are passing to activity & to fragment as well
-                int mypos = recyclerView.getChildViewHolder(view).getAdapterPosition();
-                Intent detailed = new Intent(getActivity(), EventDeatilsPage.class);
-                detailed.putExtra("eventInfo", childList.get(mypos - 1));
-                startActivity(detailed);
-                getActivity().overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left);
+                if (position == 0) {
+                    return;
+                } else {
+                    int mypos = recyclerView.getChildViewHolder(view).getAdapterPosition();
+                    Intent detailed = new Intent(getActivity(), EventDeatilsPage.class);
+                    detailed.putExtra("eventInfo", childList.get(mypos - 1));
+                    startActivity(detailed);
+                    getActivity().overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left);
+                }
             }
 
             @Override
@@ -161,9 +174,9 @@ public class EventsFragment extends Fragment {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
 
-                ValueAnimator animator = ValueAnimator.ofInt(0, 1);
+               /* ValueAnimator animator = ValueAnimator.ofInt(0, 1);
                 if (dy > 0 ) {
-                    HomePage.navigation.setVisibility(View.GONE);
+                   // HomePage.navigation.setVisibility(View.GONE);
                     //Getting actual yourViewToHide params
                     ViewGroup.LayoutParams params = NotificationsFragment.lltopsection.getLayoutParams();
                     if (!animator.isRunning()) {
@@ -186,7 +199,7 @@ public class EventsFragment extends Fragment {
                     }
 
                 } else if (dy < 0 ) {
-                    HomePage.navigation.setVisibility(View.VISIBLE);
+                   // HomePage.navigation.setVisibility(View.VISIBLE);
                     ViewGroup.LayoutParams params = NotificationsFragment.lltopsection.getLayoutParams();
                     if (!animator.isRunning()) {
                         //Setting animation from actual value to the initial yourViewToHide height)
@@ -206,7 +219,7 @@ public class EventsFragment extends Fragment {
                         animator.start();
 
                     }
-                }
+                }*/
                 if (dy > 0) //check for scroll down
                 {
                     visibleItemCount = linearLayoutManager.getChildCount();
@@ -223,10 +236,10 @@ public class EventsFragment extends Fragment {
                             AlaramsRequest alaramsRequest = new AlaramsRequest();
                             alaramsRequest.setStartNo(startNo);
                             alaramsRequest.setEndNo(endNo);
-                            if(Helper.hasNetworkConnection(getActivity())) {
+                            if (Helper.hasNetworkConnection(getActivity())) {
                                 getEvents(getActivity(), alaramsRequest);
-                            }else {
-                                Toast.makeText(getActivity(), R.string.noconnection,Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(getActivity(), R.string.noconnection, Toast.LENGTH_LONG).show();
 
                             }
                         }
@@ -247,6 +260,7 @@ public class EventsFragment extends Fragment {
             @Override
             public void onSucess(Object response, int sttuscode) {
                 sections.clear();
+                mSwipeRefreshLayout.setRefreshing(false);
                 Response<List<EventsResponse>> mRes = (Response<List<EventsResponse>>) response;
                 List<EventsResponse> mData = mRes.body();
                 if (isack) {
@@ -256,13 +270,14 @@ public class EventsFragment extends Fragment {
                 if (mData.size() > 2) {
                     childList.addAll(mData);
                     loading = true;
-                }else {
+                } else {
                     loading = false;
-                    Toast.makeText(mContext,"No Event Record Found.",Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, "You have reached end of Event List", Toast.LENGTH_LONG).show();
+                    recyclerView.getLayoutManager().scrollToPosition(0);
                 }
 
-                NotificationsFragment.lbleventcount.setText(String.valueOf(childList.size()));
-                sections.add(new EventSectionHeader(childList, "2018", 1));
+                // NotificationsFragment.lbleventcount.setText(String.valueOf(childList.size()));
+                sections.add(new EventSectionHeader(childList, "2019", 1));
                 adapterRecycler.notifyDataChanged(sections);
 
                 SpinnerManager.hideSpinner(mContext);
@@ -271,12 +286,16 @@ public class EventsFragment extends Fragment {
             @Override
             public void onFailure(Throwable error) {
                 SpinnerManager.hideSpinner(mContext);
+                mSwipeRefreshLayout.setRefreshing(false);
+
                 error.printStackTrace();
             }
 
             @Override
             public void failureResponse(Object response) {
                 SpinnerManager.hideSpinner(mContext);
+                mSwipeRefreshLayout.setRefreshing(false);
+
             }
         });
     }
@@ -292,6 +311,7 @@ public class EventsFragment extends Fragment {
                 alaramsRequest.setStartNo(minposition);
                 alaramsRequest.setEndNo(maxposition);
                 isack = true;
+                getUnackEventCounts();
                 getEvents(context, alaramsRequest);
             }
 
@@ -310,6 +330,19 @@ public class EventsFragment extends Fragment {
 
     }
 
+    @Override
+    public void onRefresh() {
+        AlaramsRequest alaramsRequest = new AlaramsRequest();
+        alaramsRequest.setStartNo(1);
+        alaramsRequest.setEndNo(endNo);
+        if (Helper.hasNetworkConnection(getActivity())) {
+            getEvents(getActivity(), alaramsRequest);
+        } else {
+            Toast.makeText(getActivity(), R.string.noconnection, Toast.LENGTH_LONG).show();
+
+        }
+    }
+
     public class EventNotesDialog extends Dialog implements
             View.OnClickListener {
 
@@ -320,13 +353,16 @@ public class EventsFragment extends Fragment {
         private TextView mTitle, mDes;
         private EditText mNotes;
         private Button mCancel, mGo;
+        private EventsResponse eventsResponse;
 
-        public EventNotesDialog(Activity a, int id) {
+        public EventNotesDialog(Activity a, int id, EventsResponse eventsResponse) {
             super(a);
             // TODO Auto-generated constructor stub
             this.c = a;
             this.mId = id;
+            this.eventsResponse = eventsResponse;
         }
+
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -335,6 +371,7 @@ public class EventsFragment extends Fragment {
             setContentView(R.layout.ack_notes_layout);
             initViews();
             applyFonts();
+            mDes.setText(eventsResponse.getEventDecription());
 
 
         }
@@ -372,10 +409,10 @@ public class EventsFragment extends Fragment {
                     mAckInfo.setID(String.valueOf(mId));
                     mAckInfo.setQType("ackevents");
                     mAckInfo.setAckNotes(notes);
-                    if(Helper.hasNetworkConnection(c)) {
+                    if (Helper.hasNetworkConnection(c)) {
                         sendEvenAck(c, mAckInfo);
-                    }else {
-                        Toast.makeText(getActivity(), R.string.noconnection,Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getActivity(), R.string.noconnection, Toast.LENGTH_LONG).show();
 
                     }
                     break;
@@ -399,6 +436,7 @@ public class EventsFragment extends Fragment {
                     alaramsRequest.setStartNo(minposition);
                     alaramsRequest.setEndNo(maxposition);
                     isack = true;
+                    getUnackEventCounts();
                     getEvents(context, alaramsRequest);
 
                 }
@@ -420,5 +458,35 @@ public class EventsFragment extends Fragment {
 
         }
 
+    }
+
+
+    private void getUnackEventCounts() {
+        CountService.fetchUnackEventCount(new ResponseListner() {
+            @Override
+            public void onSucess(Object response, int sttuscode) {
+                Response<List<EventCountResponse>> mRes = (Response<List<EventCountResponse>>) response;
+                List<EventCountResponse> mData = mRes.body();
+                EventCountResponse evres = mData.get(0);
+
+                if (evres.getEventCount() == 0) {
+                    lbleventcount.setVisibility(View.GONE);
+                } else {
+                    lbleventcount.setText(String.valueOf(evres.getEventCount()));
+                }
+
+
+            }
+
+            @Override
+            public void onFailure(Throwable error) {
+                lbleventcount.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void failureResponse(Object response) {
+                lbleventcount.setVisibility(View.GONE);
+            }
+        });
     }
 }

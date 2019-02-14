@@ -50,6 +50,27 @@ public class UserProfileResponse {
     @SerializedName("UserGroupName")
     @Expose
     private String userGroupName;
+    @SerializedName("Email_Alert")
+    @Expose
+    private Boolean emailAlert;
+    @SerializedName("SMS_Alert")
+    @Expose
+    private Boolean sMSAlert;
+    @SerializedName("Push_Notification_Alert")
+    @Expose
+    private Boolean pushNotificationAlert;
+
+    public String getProfilepicture() {
+        return profilepicture;
+    }
+
+    public void setProfilepicture(String profilepicture) {
+        this.profilepicture = profilepicture;
+    }
+
+    @SerializedName("Profile_Picture")
+    @Expose
+    private String profilepicture;
 
     public Integer getUserId() {
         return userId;
@@ -169,6 +190,30 @@ public class UserProfileResponse {
 
     public void setUserGroupName(String userGroupName) {
         this.userGroupName = userGroupName;
+    }
+
+    public Boolean getEmailAlert() {
+        return emailAlert;
+    }
+
+    public void setEmailAlert(Boolean emailAlert) {
+        this.emailAlert = emailAlert;
+    }
+
+    public Boolean getSMSAlert() {
+        return sMSAlert;
+    }
+
+    public void setSMSAlert(Boolean sMSAlert) {
+        this.sMSAlert = sMSAlert;
+    }
+
+    public Boolean getPushNotificationAlert() {
+        return pushNotificationAlert;
+    }
+
+    public void setPushNotificationAlert(Boolean pushNotificationAlert) {
+        this.pushNotificationAlert = pushNotificationAlert;
     }
 
 }

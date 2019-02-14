@@ -7,31 +7,13 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/grey"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <TextView
-            android:text="RapidNotifier"
-            android:layout_width="match_parent"
-            android:gravity="center"
-            android:id="@+id/title"
-            android:textColor="@color/white"
-            android:textSize="14dp"
-            android:layout_gravity="center"
-            android:layout_height="match_parent" />
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="vertical"
+        android:background="@color/notices"
         android:padding="10dp"
         android:id="@+id/layouttopsection"
-        android:visibility="visible"
         android:layout_height="150dp">
 
         <FrameLayout
@@ -44,6 +26,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
+           <TextView
+               android:id="@+id/countpager"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_gravity="right"
+               android:textColor="@color/white"
+               android:text="0/10"
+               android:layout_marginRight="15dp"/>
+
             <ImageView
                 android:id="@+id/right_nav"
                 android:layout_width="60dp"
@@ -55,23 +46,17 @@
 
         </FrameLayout>
 
-        <android.support.v4.view.ViewPager
-            android:id="@+id/viewPager"
-            android:layout_width="fill_parent"
-            android:layout_height="100dp" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/tabs"
         android:layout_width="match_parent"
         android:layout_height="35dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="1dp"
         android:layout_marginTop="5dp"
         android:background="@color/white"
         android:gravity="center"
         android:orientation="horizontal"
-        android:weightSum="3">
+        android:weightSum="2">
 
         <LinearLayout
             android:id="@+id/llalaram"
@@ -79,7 +64,6 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/tab_selected"
-
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -87,7 +71,7 @@
                 android:id="@+id/lblalaram"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Alaram"
+                android:text="Alarm"
                 android:textAllCaps="true"
                 android:textColor="@color/block" />
 
@@ -139,6 +123,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:visibility="gone"
             android:background="@drawable/non_selected_tab"
             android:gravity="center">
 
@@ -155,6 +140,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:layout_marginTop="2dp">
 
         <View

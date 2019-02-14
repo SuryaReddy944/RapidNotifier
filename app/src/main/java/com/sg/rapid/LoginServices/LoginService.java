@@ -4,6 +4,8 @@ import com.sg.rapid.Activity.LoginScreen;
 import com.sg.rapid.CallBacks.ResponseListner;
 import com.sg.rapid.ServiceLayer.BaseService;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -50,15 +52,15 @@ public class LoginService extends BaseService {
 
     public static void sendFirebaseToken(final TokenModel model,final ResponseListner responseListner){
         FCMTokenInterface fcmTokenInterface = retrofit.create(FCMTokenInterface.class);
-        Call<Object> mCall = fcmTokenInterface.sendToken(model);
-        mCall.enqueue(new Callback<Object>() {
+        Call<List<TokenResponse>> mCall = fcmTokenInterface.sendToken(model);
+        mCall.enqueue(new Callback<List<TokenResponse>>() {
             @Override
-            public void onFailure(Call<Object> call, Throwable t) {
+            public void onFailure(Call<List<TokenResponse>> call, Throwable t) {
                 responseListner.onFailure(t);
             }
 
             @Override
-            public void onResponse(Call<Object> call, Response<Object> response) {
+            public void onResponse(Call<List<TokenResponse>> call, Response<List<TokenResponse>> response) {
                 if(response.isSuccessful()){
                     responseListner.onSucess(response,response.code());
                 }
@@ -77,7 +79,7 @@ public class LoginService extends BaseService {
     public interface FCMTokenInterface{
         @Headers("Content-Type: application/json; charset=utf-8")
         @POST("UpdateUserKeys")
-        Call<Object> sendToken(@Body TokenModel tokenModel);
+        Call<List<TokenResponse>> sendToken(@Body TokenModel tokenModel);
     }
 
 

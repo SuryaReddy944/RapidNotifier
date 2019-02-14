@@ -10,5 +10,7 @@
     <string name="error_field_required">This field is required...</string>
     <string name="error_password_match">Passwords are not the same</string>
     <string name="noconnection">Please check your internet connection and try again.</string>
+    <string name="manage_noticeboard">Manage \nnoticeboard</string>
+    <string name="severity">Severity</string>
 
 </resources>

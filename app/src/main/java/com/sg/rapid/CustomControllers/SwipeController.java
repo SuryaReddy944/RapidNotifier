@@ -41,6 +41,10 @@ public class SwipeController extends Callback {
 
     @Override
     public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+        if(viewHolder.getAdapterPosition() == 0){
+            return 0;
+        }
+
         return makeMovementFlags(0, LEFT | RIGHT);
     }
 
@@ -166,7 +170,7 @@ public class SwipeController extends Callback {
         RectF rightButton = new RectF(itemView.getRight() - buttonWidthWithoutPadding, itemView.getTop(), itemView.getRight(), itemView.getBottom());
         p.setColor(mContext.getResources().getColor(R.color.orange));
         c.drawRoundRect(rightButton, corners, corners, p);
-        drawText("Ack with notes", c, rightButton, p);
+        drawText("ACK WITH NOTES", c, rightButton, p);
 
         buttonInstance = null;
         if (buttonShowedState == ButtonsState.LEFT_VISIBLE) {
@@ -178,7 +182,7 @@ public class SwipeController extends Callback {
     }
 
     private void drawText(String text, Canvas c, RectF button, Paint p) {
-        float textSize = 30;
+        float textSize = 25;
         p.setColor(Color.WHITE);
         p.setAntiAlias(true);
         p.setTextSize(textSize);

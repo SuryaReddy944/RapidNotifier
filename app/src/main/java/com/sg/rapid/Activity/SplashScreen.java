@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 
 import com.sg.rapid.FireBaseServices.Config;
@@ -16,13 +17,15 @@ public class SplashScreen extends AppCompatActivity {
     // Splash screen timer
     private static int SPLASH_TIME_OUT = 10;
     private  static SharedPreferences pref;
+    public static String userType;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash_screen);
-        pref  = getApplicationContext().getSharedPreferences(Config.SHARED_PREF, 0);
+        pref  = PreferenceManager.getDefaultSharedPreferences(this);
+        userType = pref.getString("UserType","");
 
         new Handler().postDelayed(new Runnable() {
 

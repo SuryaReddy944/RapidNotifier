@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/navigation_home"
-        android:icon="@drawable/ic_homesvg"
+        android:icon="@drawable/timeline"
         android:title="@string/title_home" />
 
    <!-- <item
@@ -13,17 +13,17 @@
 
     <item
         android:id="@+id/navigation_explore"
-        android:icon="@drawable/reportssvg"
+        android:icon="@drawable/explore"
         android:title="@string/title_explore" />
 
     <item
         android:id="@+id/navigation_reports"
-        android:icon="@drawable/reportssvg"
+        android:icon="@drawable/assignment"
         android:title="@string/title_reports" />
 
     <item
         android:id="@+id/navigation_profile"
-        android:icon="@drawable/usersvg"
+        android:icon="@drawable/accountcircle"
         android:title="@string/title_profile" />
 
 </menu>

@@ -22,6 +22,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 public class BaseService {
+
     protected static final String PROD_BASE_URL = "https://ibmsaev2.azurewebsites.net/api/User/";
     protected static HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY);
     protected static TokenInterceptor tokenInterceptor = new TokenInterceptor();

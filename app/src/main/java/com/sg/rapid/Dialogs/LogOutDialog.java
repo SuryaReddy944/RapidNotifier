@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -29,7 +30,7 @@ public class LogOutDialog extends Dialog implements
         super(a);
         // TODO Auto-generated constructor stub
         this.c = a;
-        pref  = c.getSharedPreferences(Config.SHARED_PREF, 0);
+        pref  = PreferenceManager.getDefaultSharedPreferences(c);
 
     }
 
@@ -75,9 +76,10 @@ public class LogOutDialog extends Dialog implements
                 break;
             case R.id.buttongo:
                 dismiss();
-                SharedPreferences.Editor mEditor = pref.edit();
-                mEditor.putString("token","");
-                mEditor.commit();
+                SharedPreferences.Editor edit = pref.edit();
+                edit.putString("token","");
+                edit.putString("UserType","");
+                edit.apply();
                 Intent mSplash = new Intent(c, SplashScreen.class);
                 c.startActivity(mSplash);
                 c.finish();

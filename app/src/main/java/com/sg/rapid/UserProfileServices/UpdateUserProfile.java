@@ -50,11 +50,23 @@ public class UpdateUserProfile {
         UserId = userId;
     }
 
+    public String getProfile_Picture() {
+        return Profile_Picture;
+    }
+
+    public void setProfile_Picture(String profile_Picture) {
+        Profile_Picture = profile_Picture;
+    }
+
     public String TelNo;
     public String EmailAddress;
     public boolean Email_Alert;
     public boolean SMS_Alert;
     public boolean Push_Notification_Alert;
     public String UserId;
+
+
+
+    private String Profile_Picture;
 
 }

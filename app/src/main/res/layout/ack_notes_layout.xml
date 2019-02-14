@@ -62,12 +62,12 @@
             android:maxLines="6"
             android:isScrollContainer="true"
             android:background="@drawable/edittext_shape"
-            android:hint="Notes (optional)"
+            android:hint="Enter your notes here..."
             android:textIsSelectable="true"
             android:focusable="true"
             android:gravity="top"
             android:padding="10dp"
-            style="@style/Base.TextAppearance.AppCompat.Large"
+
             />
 
 
@@ -96,7 +96,7 @@
             android:layout_height="40dp"
             android:layout_weight="1"
             android:textColor="@color/white"
-            android:background="@color/orange"
+            android:background="@color/cancelcolor"
             android:gravity="center"
             android:singleLine="true"
             android:text="Cancel"
@@ -108,11 +108,11 @@
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:background="@color/green"
+            android:background="@color/ackcolor"
             android:maxLength="10"
             android:textColor="@color/white"
             android:singleLine="true"
-            android:text="Send"
+            android:text="ACK"
             />
     </LinearLayout>
 

@@ -1,175 +1,236 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activity.HomePage">
 
     <LinearLayout
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/grey"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:orientation="horizontal">
-        <ImageView
-            android:id="@+id/backbutton"
-            android:src="@drawable/btn_back"
-            android:layout_width="30dp"
-            android:layout_marginLeft="10dp"
-            android:layout_height="30dp" />
-        <TextView
-            android:text="Update profile"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="50dp"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:text="laskdjasldjkdlask"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:id="@+id/headerlayout"
             android:layout_width="match_parent"
-            android:gravity="center"
-            android:id="@+id/title"
-            android:textColor="@color/white"
-            android:textSize="14dp"
-            android:layout_gravity="center"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <include
+                layout="@layout/comman_header"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="40dp"
+                    android:focusableInTouchMode="true"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/profilepic"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Upload profile picture"
+                        android:textSize="14dp" />
+
+                   <ImageView
+                       android:id="@+id/imageprofilepicture"
+                       android:src="@drawable/ic_camera"
+                       android:layout_width="match_parent"
+                       android:gravity="center"
+                       android:rotation="0"
+                       android:layout_gravity="center"
+                       android:layout_height="200dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="40dp"
+                    android:focusableInTouchMode="true"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/lblemail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Email"
+                        android:textSize="14dp" />
+
+                    <EditText
+                        android:id="@+id/editTextemail"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/edittext_shape"
+                        android:drawablePadding="5dp"
+                        android:ems="10"
+                        android:hint="Email "
+                        android:inputType="textEmailAddress"
+                        android:paddingLeft="5dp"
+                        android:textColor="@color/block"
+                        android:textColorHint="@color/grey" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="30dp"
+                    android:focusableInTouchMode="true"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/lblphone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Phone Number"
+                        android:textSize="14dp" />
+
+                    <EditText
+                        android:id="@+id/editTextphone"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/edittext_shape"
+                        android:drawablePadding="5dp"
+                        android:ems="10"
+                        android:hint="Phone "
+                        android:inputType="phone"
+                        android:maxLength="10"
+                        android:paddingLeft="5dp"
+                        android:textColor="@color/block"
+                        android:textColorHint="@color/grey" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="30dp">
+
+                    <TextView
+                        android:id="@+id/lblalerts"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Alerts"
+                        android:textSize="14dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:orientation="horizontal">
+
+                    <CheckBox
+                        android:id="@+id/chpush"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:buttonTint="@color/block"
+                        android:text="Push Notification"
+                        android:textColor="@color/block" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:visibility="gone"
+                    android:layout_marginRight="10dp"
+                    android:orientation="horizontal">
+
+                    <CheckBox
+                        android:id="@+id/chemail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:buttonTint="@color/block"
+                        android:text="Email"
+                        android:textColor="@color/block" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:visibility="gone"
+                    android:orientation="horizontal">
+
+                    <CheckBox
+                        android:id="@+id/chsms"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:buttonTint="@color/block"
+                        android:text="SMS"
+                        android:textColor="@color/block" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="right">
+
+                    <Button
+                        android:id="@+id/buttonsave"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/grey"
+                        android:text="Save" />
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+
     </LinearLayout>
 
-   <ScrollView
-       android:layout_width="match_parent"
-       android:fillViewport="true"
-       android:layout_height="match_parent">
-       <LinearLayout
-           android:layout_width="match_parent"
-           android:orientation="vertical"
-           android:layout_height="wrap_content">
-           <LinearLayout
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:layout_marginLeft="10dp"
-               android:layout_marginRight="10dp"
-               android:layout_marginTop="40dp"
-               android:focusableInTouchMode="true"
-               android:orientation="vertical">
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/navigationupdateprofile"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:theme="@style/Widget.BottomNavigationView"
+        android:background="@color/topheader"
+        app:itemIconTint="@drawable/navi_selector"
+        app:itemTextColor="@color/white"
+        app:labelVisibilityMode="labeled"
+        app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:menu="@menu/navigation" />
 
-               <TextView
-                   android:layout_width="match_parent"
-                   android:text="Email"
-                   android:textSize="14dp"
-                   android:id="@+id/lblemail"
-                   android:layout_height="wrap_content" />
-
-               <EditText
-                   android:id="@+id/editTextemail"
-                   android:layout_width="match_parent"
-                   android:layout_height="40dp"
-                   android:layout_weight="1"
-                   android:background="@drawable/edittext_shape"
-
-                   android:drawablePadding="5dp"
-                   android:ems="10"
-                   android:hint="Email "
-                   android:inputType="textEmailAddress"
-                   android:paddingLeft="5dp"
-                   android:textColor="@color/block"
-                   android:textColorHint="@color/grey" />
-           </LinearLayout>
-           <LinearLayout
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:layout_marginLeft="10dp"
-               android:layout_marginRight="10dp"
-               android:layout_marginTop="30dp"
-               android:focusableInTouchMode="true"
-
-               android:orientation="vertical">
-               <TextView
-                   android:layout_width="match_parent"
-                   android:text="Phone Number"
-                   android:textSize="14dp"
-                   android:id="@+id/lblphone"
-                   android:layout_height="wrap_content" />
-
-               <EditText
-                   android:id="@+id/editTextphone"
-                   android:layout_width="match_parent"
-                   android:layout_height="40dp"
-                   android:layout_weight="1"
-                   android:background="@drawable/edittext_shape"
-
-                   android:drawablePadding="5dp"
-                   android:ems="10"
-                   android:hint="Phone "
-                   android:maxLength="10"
-                   android:inputType="phone"
-                   android:paddingLeft="5dp"
-                   android:textColor="@color/block"
-                   android:textColorHint="@color/grey" />
-           </LinearLayout>
-           <LinearLayout
-               android:layout_width="match_parent"
-               android:layout_marginLeft="10dp"
-               android:layout_marginRight="10dp"
-               android:layout_marginTop="30dp"
-               android:layout_height="wrap_content">
-               <TextView
-                   android:layout_width="match_parent"
-                   android:text="Alerts"
-                   android:id="@+id/lblalerts"
-                   android:textSize="14dp"
-                   android:layout_height="wrap_content" />
-           </LinearLayout>
-
-           <LinearLayout
-               android:layout_width="match_parent"
-               android:orientation="horizontal"
-               android:layout_marginLeft="10dp"
-               android:layout_marginRight="10dp"
-               android:layout_height="wrap_content">
-               <CheckBox
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:id="@+id/chpush"
-                   android:text="Push Notification"
-                   android:buttonTint="@color/block"
-                   android:textColor="@color/block" />
-           </LinearLayout>
-           <LinearLayout
-               android:layout_width="match_parent"
-               android:orientation="horizontal"
-               android:layout_marginLeft="10dp"
-               android:layout_marginRight="10dp"
-               android:layout_height="wrap_content">
-               <CheckBox
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:id="@+id/chemail"
-                   android:text="Email"
-                   android:buttonTint="@color/block"
-                   android:textColor="@color/block" />
-           </LinearLayout>
-           <LinearLayout
-               android:layout_width="match_parent"
-               android:orientation="horizontal"
-               android:layout_marginLeft="10dp"
-               android:layout_marginRight="10dp"
-               android:layout_height="wrap_content">
-               <CheckBox
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:id="@+id/chsms"
-                   android:text="SMS"
-                   android:buttonTint="@color/block"
-                   android:textColor="@color/block" />
-           </LinearLayout>
-
-           <LinearLayout
-               android:layout_width="match_parent"
-             android:layout_marginTop="10dp"
-               android:layout_marginRight="10dp"
-               android:gravity="right"
-               android:layout_height="wrap_content">
-               <Button
-                   android:id="@+id/buttonsave"
-                   android:layout_width="wrap_content"
-                   android:text="Save"
-                   android:background="@color/grey"
-                   android:layout_height="wrap_content" />
-           </LinearLayout>
-
-       </LinearLayout>
-   </ScrollView>
-
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

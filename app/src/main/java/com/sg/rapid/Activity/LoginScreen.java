@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -31,6 +32,7 @@ import com.sg.rapid.LoginServices.LoginResponse;
 import com.sg.rapid.LoginServices.LoginService;
 import com.sg.rapid.LoginServices.TokenModel;
 
+import com.sg.rapid.LoginServices.TokenResponse;
 import com.sg.rapid.LoginServices.UserInfo;
 import com.sg.rapid.Models.AlaramData;
 import com.sg.rapid.R;
@@ -48,6 +50,7 @@ import retrofit2.Response;
 public class LoginScreen extends AppCompatActivity {
 
     private static final String TAG ="LoginPage";
+
     private TextView mLabel, mForgetpass;
 
     private EditText mEmail, mPass;
@@ -55,7 +58,8 @@ public class LoginScreen extends AppCompatActivity {
     private Button mSignIn;
 
     private CheckBox mRememberme;
-   private static SharedPreferences pref;
+
+    private  static SharedPreferences pref;
 
 
     private BroadcastReceiver mRegistrationBroadcastReceiver;
@@ -66,7 +70,7 @@ public class LoginScreen extends AppCompatActivity {
         setContentView(R.layout.login_screen);
         this.initViews();
         this.applyFonts();
-       pref  = getApplicationContext().getSharedPreferences(Config.SHARED_PREF, 0);
+       pref  = PreferenceManager.getDefaultSharedPreferences(this);
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -173,6 +177,8 @@ public class LoginScreen extends AppCompatActivity {
         String email = mEmail.getText().toString();
         String mpass = mPass.getText().toString();
 
+
+
         if(email.isEmpty()){
             mEmail.setError("Email is mandatory.");
             mEmail.requestFocus();
@@ -211,9 +217,9 @@ public class LoginScreen extends AppCompatActivity {
                  Response<LoginResponse> mRes = (Response<LoginResponse>)response;
 
                  LoginResponse mData = mRes.body();
-                 SharedPreferences.Editor mEditor = pref.edit();
-                 mEditor.putString("token",mData.getAccessToken());
-                 mEditor.commit();
+                 SharedPreferences.Editor edit = pref.edit();
+                    edit.putString("token",mData.getAccessToken());
+                    edit.apply();
                  TokenModel mModel = new TokenModel();
                  mModel.setDeviceId("Android");
                  mModel.setFCM_Token(getFcmToken());
@@ -250,9 +256,13 @@ public class LoginScreen extends AppCompatActivity {
             @Override
             public void onSucess(Object response, int sttuscode) {
                 if(sttuscode ==200){
-
-                }else{
-
+                    Response<List<TokenResponse>> mres = (Response<List<TokenResponse>>)response;
+                    List<TokenResponse> mData = mres.body();
+                    TokenResponse mTokenRes = mData.get(0);
+                    SharedPreferences.Editor mEditor = pref.edit();
+                    mEditor.putString("UserType",mTokenRes.getUserType());
+                    SplashScreen.userType = mTokenRes.getUserType();
+                    mEditor.apply();
                 }
             }
 

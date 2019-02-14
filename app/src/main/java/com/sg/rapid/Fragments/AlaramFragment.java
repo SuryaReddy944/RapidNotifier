@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -37,9 +38,12 @@ import com.sg.rapid.AlaramService.AlaramServices;
 import com.sg.rapid.CallBacks.RecyclerTouchListener;
 import com.sg.rapid.CallBacks.RecyclerViewClickListener;
 import com.sg.rapid.CallBacks.ResponseListner;
+import com.sg.rapid.CountServices.AlarmCountResponse;
+import com.sg.rapid.CountServices.CountService;
 import com.sg.rapid.CustomControllers.SwipeController;
 import com.sg.rapid.CustomControllers.SwipeControllerActions;
 
+import com.sg.rapid.Dialogs.SessionExpireDialog;
 import com.sg.rapid.Models.AlaramsRequest;
 import com.sg.rapid.R;
 import com.sg.rapid.Utilities.CustomFonts;
@@ -51,22 +55,25 @@ import java.util.List;
 
 import retrofit2.Response;
 
-public class AlaramFragment extends Fragment {
+import static com.sg.rapid.Fragments.NotificationsFragment.lblalaramcount;
+
+public class AlaramFragment extends Fragment  implements SwipeRefreshLayout.OnRefreshListener{
 
     private RecyclerView recyclerView;
     private AdapterSectionRecycler adapterRecycler;
-    private  List<SectionHeader> sections;
-    private   List<AlaramResponse> childList ;
+    private List<SectionHeader> sections;
+    private List<AlaramResponse> childList;
     private SwipeController swipeController;
     private LinearLayoutManager linearLayoutManager;
     private boolean loading = true;
     private boolean isack = false;
     int pastVisiblesItems, visibleItemCount, totalItemCount;
     public int startNo = 1;
-    public int endNo = 10;
+    public int endNo = 20;
     public int minposition = 1;
-    public  int maxposition = endNo;
+    public int maxposition = endNo;
     final int initialViewHeight = NotificationsFragment.lltopsection.getLayoutParams().height;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
 
     @Nullable
@@ -76,54 +83,56 @@ public class AlaramFragment extends Fragment {
         //initialize RecyclerView
         recyclerView = (RecyclerView) mView.findViewById(R.id.recycler_view);
         //setLayout Manager
-         linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
         sections = new ArrayList<>();
         childList = new ArrayList<>();
+        mSwipeRefreshLayout = (SwipeRefreshLayout)mView.findViewById(R.id.swipe_container) ;
+        mSwipeRefreshLayout.setOnRefreshListener(this);
 
         adapterRecycler = new AdapterSectionRecycler(getActivity(), sections);
         recyclerView.setAdapter(adapterRecycler);
-       AlaramsRequest  alaramsRequest  = new AlaramsRequest();
-       alaramsRequest.setStartNo(startNo);
-       alaramsRequest.setEndNo(endNo);
-       if(Helper.hasNetworkConnection(getActivity())) {
-           getAlarams(getActivity(), alaramsRequest);
-       }else {
-           Toast.makeText(getActivity(), R.string.noconnection,Toast.LENGTH_LONG).show();
+        AlaramsRequest alaramsRequest = new AlaramsRequest();
+        alaramsRequest.setStartNo(startNo);
+        alaramsRequest.setEndNo(endNo);
+        if (Helper.hasNetworkConnection(getActivity())) {
+            getAlarams(getActivity(), alaramsRequest);
+        } else {
+            Toast.makeText(getActivity(), R.string.noconnection, Toast.LENGTH_LONG).show();
 
-       }
+        }
         swipeController = new SwipeController(getActivity(), new SwipeControllerActions() {
             @Override
             public void onRightClicked(int position) {
-                AlaramResponse mAlaramResponse = childList.get(position-1);
-                if(mAlaramResponse.getAcknowledgeNotes() == null){
-                    NotesDialog mDialog = new NotesDialog(getActivity(),mAlaramResponse.getAlarmLogId());
+                AlaramResponse mAlaramResponse = childList.get(position - 1);
+                if (mAlaramResponse.getAcknowledgeNotes() == null) {
+                    NotesDialog mDialog = new NotesDialog(getActivity(), mAlaramResponse.getAlarmLogId(), mAlaramResponse);
                     mDialog.show();
-                }else{
-                    Toast.makeText(getActivity(),"Already acknowledged",Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getActivity(), "Already acknowledged", Toast.LENGTH_LONG).show();
                 }
 
             }
 
             @Override
             public void onLeftClicked(int position) {
-               // Toast.makeText(getActivity(),"Ack  clicked",Toast.LENGTH_LONG).show();
-                AlaramResponse mAlaramResponse = childList.get(position-1);
-                if(mAlaramResponse.getAcknowledgeNotes() == null){
+                // Toast.makeText(getActivity(),"Ack  clicked",Toast.LENGTH_LONG).show();
+                AlaramResponse mAlaramResponse = childList.get(position - 1);
+                if (mAlaramResponse.getAcknowledgeNotes() == null) {
                     AckInfo mAckInfo = new AckInfo();
                     mAckInfo.setID(String.valueOf(mAlaramResponse.getAlarmLogId()));
                     mAckInfo.setQType("ackalarms");
                     mAckInfo.setAckNotes("");
-                    if(Helper.hasNetworkConnection(getActivity())) {
+                    if (Helper.hasNetworkConnection(getActivity())) {
                         sendAlaramAck(getActivity(), mAckInfo);
-                    }else {
-                        Toast.makeText(getActivity(), R.string.noconnection,Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getActivity(), R.string.noconnection, Toast.LENGTH_LONG).show();
 
                     }
 
-                }else{
-                    Toast.makeText(getActivity(),"Already acknowledged",Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getActivity(), "Already acknowledged", Toast.LENGTH_LONG).show();
                 }
 
             }
@@ -145,11 +154,15 @@ public class AlaramFragment extends Fragment {
             @Override
             public void onClick(View view, final int position) {
                 //Values are passing to activity & to fragment as well
-                 Log.e("size",""+childList.size());
-                Intent detailed = new Intent(getActivity(), AlaramDetailedPage.class);
-                detailed.putExtra("alaramInfo",childList.get(position-1));
-                startActivity(detailed);
-                getActivity().overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left);
+                if (position == 0) {
+                    return;
+                } else {
+                    Log.e("size", "" + childList.size());
+                    Intent detailed = new Intent(getActivity(), AlaramDetailedPage.class);
+                    detailed.putExtra("alaramInfo", childList.get(position - 1));
+                    startActivity(detailed);
+                    getActivity().overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left);
+                }
             }
 
             @Override
@@ -162,23 +175,21 @@ public class AlaramFragment extends Fragment {
 
 
 
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
-        {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
 
-            {
-                ValueAnimator animator = ValueAnimator.ofInt(0, 1);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+              /*ValueAnimator animator = ValueAnimator.ofInt(0, 1);
                 if (dy > 0 ) {
 
-                    HomePage.navigation.setVisibility(View.GONE);
+                   // HomePage.navigation.setVisibility(View.GONE);
                     //Getting actual yourViewToHide params
                     ViewGroup.LayoutParams params = NotificationsFragment.lltopsection.getLayoutParams();
                     if (!animator.isRunning()) {
                         //Setting animation from actual value to the target value (here 0, because we're hiding the view)
                         animator.setIntValues(params.height, 0);
                         //Animation duration
-                        animator.setDuration(1);
+                        animator.setDuration(0);
                         //In this listener we update the view
                         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                             @Override
@@ -194,13 +205,13 @@ public class AlaramFragment extends Fragment {
                     }
 
                 } else if (dy < 0 ) {
-                    HomePage.navigation.setVisibility(View.VISIBLE);
+                   // HomePage.navigation.setVisibility(View.VISIBLE);
                     ViewGroup.LayoutParams params = NotificationsFragment.lltopsection.getLayoutParams();
                     if (!animator.isRunning()) {
                         //Setting animation from actual value to the initial yourViewToHide height)
                         animator.setIntValues(params.height, initialViewHeight);
                         //Animation duration
-                        animator.setDuration(1);
+                        animator.setDuration(0);
                         //In this listener we update the view
                         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                             @Override
@@ -216,33 +227,29 @@ public class AlaramFragment extends Fragment {
                     }
 
 
-                }
+                }*/
 
 
-
-
-                if(dy > 0) //check for scroll down
+                if (dy > 0) //check for scroll down
                 {
                     visibleItemCount = linearLayoutManager.getChildCount();
                     totalItemCount = linearLayoutManager.getItemCount();
                     pastVisiblesItems = linearLayoutManager.findFirstVisibleItemPosition();
 
-                    if (loading)
-                    {
-                        if ( (visibleItemCount + pastVisiblesItems) >= totalItemCount)
-                        {
+                    if (loading) {
+                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
                             loading = false;
                             Log.v("...", "Last Item Wow !");
                             startNo = endNo + 1;
                             endNo = endNo + 10;
                             maxposition = endNo;
-                            AlaramsRequest  alaramsRequest  = new AlaramsRequest();
+                            AlaramsRequest alaramsRequest = new AlaramsRequest();
                             alaramsRequest.setStartNo(startNo);
                             alaramsRequest.setEndNo(endNo);
-                            if(Helper.hasNetworkConnection(getActivity())) {
+                            if (Helper.hasNetworkConnection(getActivity())) {
                                 getAlarams(getActivity(), alaramsRequest);
-                            }else {
-                                Toast.makeText(getActivity(), R.string.noconnection,Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(getActivity(), R.string.noconnection, Toast.LENGTH_LONG).show();
 
                             }
 
@@ -264,31 +271,39 @@ public class AlaramFragment extends Fragment {
     }
 
 
-    private void getAlarams(final Context mContext ,AlaramsRequest alaramsRequest ){
-        SpinnerManager.showSpinner(mContext,"Loading...");
-        AlaramServices.fetchAlarams(alaramsRequest,new ResponseListner() {
+    private void getAlarams(final Context mContext, AlaramsRequest alaramsRequest) {
+        SpinnerManager.showSpinner(mContext, "Loading...");
+        AlaramServices.fetchAlarams(alaramsRequest, new ResponseListner() {
             @Override
             public void onSucess(Object response, int sttuscode) {
                 SpinnerManager.hideSpinner(mContext);
-                sections.clear();
-                Response<List<AlaramResponse>> mRes = (Response<List<AlaramResponse>>)response;
-                List<AlaramResponse> mData = mRes.body();
-                //childList.clear();
-                 if(isack){
-                     childList.clear();
-                 }
-                 isack = false;
-                 if(mData.size() > 2){
-                     childList.addAll(mData);
-                     loading = true;
-                 }else{
-                     loading = false;
-                     Toast.makeText(mContext,"No Alarm Record Found.",Toast.LENGTH_LONG).show();
+                mSwipeRefreshLayout.setRefreshing(false);
+                if (sttuscode == 401) {
+                    SessionExpireDialog mDialog = new SessionExpireDialog(getActivity());
+                    mDialog.show();
+                } else {
+                    sections.clear();
+                    Response<List<AlaramResponse>> mRes = (Response<List<AlaramResponse>>) response;
+                    List<AlaramResponse> mData = mRes.body();
+                    //childList.clear();
+                    if (isack) {
+                        childList.clear();
+                    }
+                    isack = false;
+                    if (mData.size() > 2) {
+                        childList.addAll(mData);
+                        loading = true;
+                    } else {
+                        loading = false;
+                        Toast.makeText(mContext, "You have reached end of Alarm List", Toast.LENGTH_LONG).show();
+                        recyclerView.getLayoutManager().scrollToPosition(0);
 
-                 }
-                NotificationsFragment.lblalaramcount.setText(String.valueOf(childList.size()));
-                sections.add(new SectionHeader(childList, "2018", 1));
-                adapterRecycler.notifyDataChanged(sections);
+
+                    }
+                    // NotificationsFragment.lblalaramcount.setText(String.valueOf(childList.size()));
+                    sections.add(new SectionHeader(childList, "2019", 1));
+                    adapterRecycler.notifyDataChanged(sections);
+                }
 
 
             }
@@ -296,43 +311,61 @@ public class AlaramFragment extends Fragment {
             @Override
             public void onFailure(Throwable error) {
                 SpinnerManager.hideSpinner(mContext);
+                mSwipeRefreshLayout.setRefreshing(false);
                 error.printStackTrace();
             }
 
             @Override
             public void failureResponse(Object response) {
                 SpinnerManager.hideSpinner(mContext);
+                mSwipeRefreshLayout.setRefreshing(false);
+
             }
         });
     }
 
 
-    private void sendAlaramAck(final Context context, final AckInfo ackInfo){
-        SpinnerManager.showSpinner(context,"Loading...");
+    private void sendAlaramAck(final Context context, final AckInfo ackInfo) {
+        SpinnerManager.showSpinner(context, "Loading...");
         AlaramAcknowledgeService.ackAlaram(ackInfo, new ResponseListner() {
             @Override
             public void onSucess(Object response, int sttuscode) {
                 SpinnerManager.hideSpinner(context);
-                Toast.makeText(context,"Acknowledgement sent",Toast.LENGTH_LONG).show();
-                AlaramsRequest  alaramsRequest  = new AlaramsRequest();
+                Toast.makeText(context, "Acknowledgement sent", Toast.LENGTH_LONG).show();
+                AlaramsRequest alaramsRequest = new AlaramsRequest();
                 alaramsRequest.setStartNo(minposition);
                 alaramsRequest.setEndNo(maxposition);
                 isack = true;
-                getAlarams(context,alaramsRequest);
+                getAlarams(context, alaramsRequest);
+                getUnackAlaramCounts();
             }
 
             @Override
             public void onFailure(Throwable error) {
                 SpinnerManager.hideSpinner(context);
-                 error.printStackTrace();
+                error.printStackTrace();
             }
 
             @Override
             public void failureResponse(Object response) {
                 SpinnerManager.hideSpinner(context);
-                Toast.makeText(context,"Acknowledgement failed please try again",Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Acknowledgement failed please try again", Toast.LENGTH_LONG).show();
             }
         });
+
+    }
+
+    @Override
+    public void onRefresh() {
+        AlaramsRequest alaramsRequest = new AlaramsRequest();
+        alaramsRequest.setStartNo(1);
+        alaramsRequest.setEndNo(endNo);
+        if (Helper.hasNetworkConnection(getActivity())) {
+            getAlarams(getActivity(), alaramsRequest);
+        } else {
+            Toast.makeText(getActivity(), R.string.noconnection, Toast.LENGTH_LONG).show();
+
+        }
 
     }
 
@@ -343,14 +376,17 @@ public class AlaramFragment extends Fragment {
         public Activity c;
         public Dialog d;
         private int mId;
-        private TextView mTitle,mDes;
+        private TextView mTitle, mDes;
         private EditText mNotes;
-        private Button mCancel,mGo;
-        public NotesDialog(Activity a,int id) {
+        private Button mCancel, mGo;
+        private AlaramResponse mAlaramResponse;
+
+        public NotesDialog(Activity a, int id, AlaramResponse alaramResponse) {
             super(a);
             // TODO Auto-generated constructor stub
             this.c = a;
             this.mId = id;
+            this.mAlaramResponse = alaramResponse;
         }
 
         @Override
@@ -361,19 +397,18 @@ public class AlaramFragment extends Fragment {
             initViews();
             applyFonts();
 
-
+            mDes.setText(mAlaramResponse.getFaultDecription());
 
         }
 
         private void initViews() {
-            mTitle = (TextView)findViewById(R.id.promotitle);
-            mDes = (TextView)findViewById(R.id.promodes);
-            mNotes = (EditText)findViewById(R.id.apppromocode);
-            mCancel = (Button)findViewById(R.id.buttoncancel);
-            mGo = (Button)findViewById(R.id.buttongo);
+            mTitle = (TextView) findViewById(R.id.promotitle);
+            mDes = (TextView) findViewById(R.id.promodes);
+            mNotes = (EditText) findViewById(R.id.apppromocode);
+            mCancel = (Button) findViewById(R.id.buttoncancel);
+            mGo = (Button) findViewById(R.id.buttongo);
             mCancel.setOnClickListener(this);
             mGo.setOnClickListener(this);
-
 
 
         }
@@ -399,10 +434,10 @@ public class AlaramFragment extends Fragment {
                     mAckInfo.setID(String.valueOf(mId));
                     mAckInfo.setQType("ackalarms");
                     mAckInfo.setAckNotes(notes);
-                    if(Helper.hasNetworkConnection(c)) {
+                    if (Helper.hasNetworkConnection(c)) {
                         sendAlaramAck(c, mAckInfo);
-                    }else {
-                        Toast.makeText(getActivity(), R.string.noconnection,Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getActivity(), R.string.noconnection, Toast.LENGTH_LONG).show();
 
                     }
 
@@ -415,19 +450,20 @@ public class AlaramFragment extends Fragment {
             //dismiss();
         }
 
-        private void sendAlaramAck(final Context context, final AckInfo ackInfo){
-            SpinnerManager.showSpinner(context,"Loading...");
+        private void sendAlaramAck(final Context context, final AckInfo ackInfo) {
+            SpinnerManager.showSpinner(context, "Loading...");
             AlaramAcknowledgeService.ackAlaram(ackInfo, new ResponseListner() {
                 @Override
                 public void onSucess(Object response, int sttuscode) {
                     SpinnerManager.hideSpinner(context);
                     dismiss();
-                    Toast.makeText(context,"Acknowledgement sent",Toast.LENGTH_LONG).show();
-                    AlaramsRequest  alaramsRequest  = new AlaramsRequest();
+                    Toast.makeText(context, "Acknowledgement sent", Toast.LENGTH_LONG).show();
+                    AlaramsRequest alaramsRequest = new AlaramsRequest();
                     alaramsRequest.setStartNo(minposition);
                     alaramsRequest.setEndNo(maxposition);
                     isack = true;
-                    getAlarams(context,alaramsRequest);
+                    getAlarams(context, alaramsRequest);
+                    getUnackAlaramCounts();
 
                 }
 
@@ -442,12 +478,42 @@ public class AlaramFragment extends Fragment {
                 public void failureResponse(Object response) {
                     SpinnerManager.hideSpinner(context);
                     dismiss();
-                    Toast.makeText(context,"Acknowledgement failed please try again",Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Acknowledgement failed please try again", Toast.LENGTH_LONG).show();
                 }
             });
 
         }
 
+    }
+
+
+    private void getUnackAlaramCounts() {
+        CountService.fetchUnackAlarmCount(new ResponseListner() {
+            @Override
+            public void onSucess(Object response, int sttuscode) {
+                Response<List<AlarmCountResponse>> mRes = (Response<List<AlarmCountResponse>>) response;
+                List<AlarmCountResponse> mData = mRes.body();
+
+                AlarmCountResponse acr = mData.get(0);
+
+                if (acr.getAlarmCount() == 0) {
+                    lblalaramcount.setVisibility(View.GONE);
+                } else {
+                    lblalaramcount.setText(String.valueOf(acr.getAlarmCount()));
+                }
+
+            }
+
+            @Override
+            public void onFailure(Throwable error) {
+
+            }
+
+            @Override
+            public void failureResponse(Object response) {
+
+            }
+        });
     }
 
 
