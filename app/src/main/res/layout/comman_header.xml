@@ -29,7 +29,7 @@
                 android:layout_marginLeft="10dp"
                 android:text="RapidNotifier"
                 android:textColor="@color/white"
-                android:textSize="14dp" />
+                android:textSize="16dp" />
 
         </LinearLayout>
 
@@ -49,7 +49,7 @@
                android:layout_marginRight="10dp"
                 android:text="Surya"
                 android:textColor="@color/white"
-                android:textSize="14dp" />
+                android:textSize="16dp" />
 
             <ImageView
                 android:src="@drawable/accountcircle"

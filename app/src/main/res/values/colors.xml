@@ -24,7 +24,7 @@
     //color configurations
     <color name="topheader">#1F467D</color>
    <color name="white">#FFFFFF</color>
-    <color name="notices">#00D8E0</color>
+    <color name="notices">#b3f5fe</color>
     <color name="ackcolor">#FEA500</color>
     <color name="cancelcolor">#E51400</color>
 

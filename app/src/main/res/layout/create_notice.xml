@@ -135,9 +135,10 @@
                         android:background="@drawable/button_shapes"
                         android:drawablePadding="5dp"
                         android:ems="10"
-                        android:hint=" Description "
+                        android:gravity="start"
+                        android:hint=" Description (200 characters)"
                         android:inputType="textCapSentences|textMultiLine"
-                        android:maxLength="2000"
+                        android:maxLength="200"
                         android:paddingLeft="5dp"
                         android:textColor="@color/block"
                         android:textColorHint="@color/grey" />

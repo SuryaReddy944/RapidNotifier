@@ -112,9 +112,10 @@
 
                 <TextView
                     android:id="@+id/lblalaramcount"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
+                    android:padding="1dp"
                     android:background="@drawable/alaram_count"
                     android:gravity="center"
                     android:text=""
@@ -142,11 +143,11 @@
 
                 <TextView
                     android:id="@+id/lbleventscount"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
+                    android:padding="1dp"
                     android:background="@drawable/non_selected_count"
-
                     android:gravity="center"
                     android:text=""
                     android:textColor="@color/white" />
