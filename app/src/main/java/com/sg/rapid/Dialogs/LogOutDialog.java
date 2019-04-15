@@ -79,6 +79,7 @@ public class LogOutDialog extends Dialog implements
                 SharedPreferences.Editor edit = pref.edit();
                 edit.putString("token","");
                 edit.putString("UserType","");
+                edit.putString("UserName","");
                 edit.apply();
                 Intent mSplash = new Intent(c, SplashScreen.class);
                 c.startActivity(mSplash);

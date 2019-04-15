@@ -233,7 +233,7 @@ public class UpdateProfile extends AppCompatActivity implements BottomNavigation
             mData.setPush_Notification_Alert(false);
         }
 
-        if (mChEmail.isChecked()) {
+       /* if (mChEmail.isChecked()) {
             mData.setEmail_Alert(true);
         } else {
             mData.setEmail_Alert(false);
@@ -242,7 +242,7 @@ public class UpdateProfile extends AppCompatActivity implements BottomNavigation
             mData.setSMS_Alert(true);
         } else {
             mData.setSMS_Alert(false);
-        }
+        }*/
 
           if (OptionGalleryCamera.getInstance().getWhichImage().equalsIgnoreCase("Camera") || OptionGalleryCamera.getInstance().getWhichImage().equalsIgnoreCase("Gallery")) {
 
@@ -282,9 +282,11 @@ public class UpdateProfile extends AppCompatActivity implements BottomNavigation
                 mUsername.setText(mProfileResponse.getUserName());
                 mEmail.setText(mProfileResponse.getEmailAddress());
                 mPhone.setText(mProfileResponse.getTelNo());
-                mChEmail.setChecked(mProfileResponse.getEmailAlert());
-                mChPushNotifications.setChecked(mProfileResponse.getPushNotificationAlert());
-                mChSMS.setChecked(mProfileResponse.getSMSAlert());
+              //  mChEmail.setChecked(mProfileResponse.getEmailAlert());
+                if(mProfileResponse.getPushNotificationAlert() != null){
+                    mChPushNotifications.setChecked(mProfileResponse.getPushNotificationAlert());
+                }
+              //  mChSMS.setChecked(mProfileResponse.getSMSAlert());
 
                 try {
                     base64data = mProfileResponse.getProfilepicture().toString();

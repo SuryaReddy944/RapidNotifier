@@ -141,6 +141,9 @@ public class HomePage extends AppCompatActivity implements BottomNavigationView.
                         serverimage = new File(mContext.getCacheDir(), "Profilepic");
                         serverimage.createNewFile();
 
+                        SharedPreferences.Editor mEdit = pref.edit();
+                        mEdit.putString("UserID",String.valueOf(mProfileResponse.getUserId()));
+                        mEdit.commit();
                         FileOutputStream fos = new FileOutputStream(serverimage);
                         fos.write(imageBytes);
                         fos.flush();

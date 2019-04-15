@@ -1,8 +1,10 @@
 package com.sg.rapid.Activity;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
@@ -10,12 +12,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.sg.rapid.AlaramService.AlaramResponse;
 import com.sg.rapid.CallBacks.ResponseListner;
+import com.sg.rapid.Dialogs.UnAckDialog;
 import com.sg.rapid.EventServices.EventsResponse;
 import com.sg.rapid.R;
 import com.sg.rapid.UserProfileServices.UserProfileResponse;
@@ -45,6 +49,8 @@ public class EventDeatilsPage extends AppCompatActivity implements BottomNavigat
     private String base64data = "";
     private byte[] imageBytes;
     private File serverimage;
+    private Button mUnack;
+    private SharedPreferences mPref;
 
 
     @Override
@@ -53,6 +59,8 @@ public class EventDeatilsPage extends AppCompatActivity implements BottomNavigat
         setContentView(R.layout.alara_detailed_page);
         initViews();
         setFonts(this);
+        mPref  = PreferenceManager.getDefaultSharedPreferences(this);
+
         mEventsResponse = (EventsResponse)getIntent().getSerializableExtra("eventInfo");
         mNavigation = findViewById(R.id.navigationdetailed);
         mNavigation.setOnNavigationItemSelectedListener(this);
@@ -89,6 +97,25 @@ public class EventDeatilsPage extends AppCompatActivity implements BottomNavigat
             llacktitle.setVisibility(View.GONE);
 
         }
+
+        String username = mPref.getString("UserName","");
+        if(null != note && username.equalsIgnoreCase(mEventsResponse.getUserName())){
+            mUnack.setVisibility(View.VISIBLE);
+
+        }else {
+            mUnack.setVisibility(View.GONE);
+
+        }
+
+
+
+        mUnack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                UnAckDialog mDialog = new UnAckDialog(EventDeatilsPage.this,String.valueOf(mEventsResponse.getEventLogId()),false);
+                mDialog.show();
+            }
+        });
 
 
     }
@@ -149,7 +176,7 @@ public class EventDeatilsPage extends AppCompatActivity implements BottomNavigat
         llacktitle = (LinearLayout)findViewById(R.id.llacktitle);
         llacksection  = (LinearLayout)findViewById(R.id.acklayout);
         lblstatus = (TextView)findViewById(R.id.colorcircle);
-
+        mUnack = (Button)findViewById(R.id.buttonunack);
         mTitle = (TextView)findViewById(R.id.title);
         mUsername   = (TextView)findViewById(R.id.username);
         mProfilepic = (ImageView)findViewById(R.id.profilepicture);
@@ -169,6 +196,7 @@ public class EventDeatilsPage extends AppCompatActivity implements BottomNavigat
         lblackdetails.setTypeface(CustomFonts.getNexaBold(mContext));
         lblpriority.setTypeface(CustomFonts.getNexaBold(mContext));
         lblackdetails.setTypeface(CustomFonts.getNexaBold(mContext));
+        mUnack.setTypeface(CustomFonts.getNexaBold(mContext));
     }
 
     private void getProfile(final Context mContext) {

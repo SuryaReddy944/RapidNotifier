@@ -2,8 +2,10 @@ package com.sg.rapid.Activity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
@@ -18,6 +20,7 @@ import android.widget.TextView;
 
 import com.sg.rapid.AlaramService.AlaramResponse;
 import com.sg.rapid.CallBacks.ResponseListner;
+import com.sg.rapid.Dialogs.UnAckDialog;
 import com.sg.rapid.Fragments.ExploreFragment;
 import com.sg.rapid.Fragments.NotificationsFragment;
 import com.sg.rapid.Fragments.ProfileFragment;
@@ -51,13 +54,15 @@ public class AlaramDetailedPage extends AppCompatActivity  implements BottomNavi
     private String base64data = "";
     private byte[] imageBytes;
     private File serverimage;
+    private Button mUnack;
+    private SharedPreferences mPref;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.alara_detailed_page);
           initViews();
           setFonts(this);
-
+        mPref  = PreferenceManager.getDefaultSharedPreferences(this);
         mNavigation = findViewById(R.id.navigationdetailed);
         mNavigation.setOnNavigationItemSelectedListener(this);
         alaramResponse = (AlaramResponse)getIntent().getSerializableExtra("alaramInfo");
@@ -91,7 +96,24 @@ public class AlaramDetailedPage extends AppCompatActivity  implements BottomNavi
             llacksection.setVisibility(View.GONE);
             llacktitle.setVisibility(View.GONE);
 
+
         }
+        String username = mPref.getString("UserName","");
+        if(null != note && username.equalsIgnoreCase(alaramResponse.getUserName())){
+            mUnack.setVisibility(View.VISIBLE);
+        }else {
+            mUnack.setVisibility(View.GONE);
+        }
+
+        mUnack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                UnAckDialog mDialog = new UnAckDialog(AlaramDetailedPage.this,String.valueOf(alaramResponse.getAlarmLogId()),true);
+                mDialog.show();
+            }
+        });
+
+
 
 
     }
@@ -154,6 +176,7 @@ public class AlaramDetailedPage extends AppCompatActivity  implements BottomNavi
         llacktitle = (LinearLayout)findViewById(R.id.llacktitle);
         llacksection  = (LinearLayout)findViewById(R.id.acklayout);
         lblstatus = (TextView)findViewById(R.id.colorcircle);
+        mUnack = (Button)findViewById(R.id.buttonunack);
 
         mTitle = (TextView)findViewById(R.id.title);
         mUsername   = (TextView)findViewById(R.id.username);
@@ -174,6 +197,7 @@ public class AlaramDetailedPage extends AppCompatActivity  implements BottomNavi
         lblpriority.setTypeface(CustomFonts.getNexaBold(mContext));
         lblackdetails.setTypeface(CustomFonts.getNexaBold(mContext));
         lblalaramdetail.setTypeface(CustomFonts.getNexaBold(mContext));
+        mUnack.setTypeface(CustomFonts.getNexaBold(mContext));
     }
 
 

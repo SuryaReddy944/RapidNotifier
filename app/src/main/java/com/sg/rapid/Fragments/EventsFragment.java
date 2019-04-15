@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -70,6 +71,7 @@ public class EventsFragment extends Fragment implements SwipeRefreshLayout.OnRef
     public int maxposition = endNo;
     final int initialViewHeight = NotificationsFragment.lltopsection.getLayoutParams().height;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    public static boolean isEventUnack = false;
 
 
     @Nullable
@@ -253,6 +255,18 @@ public class EventsFragment extends Fragment implements SwipeRefreshLayout.OnRef
         return mView;
     }
 
+    @Override
+    public void onResume() {
+
+
+        if(isEventUnack){
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            ft.detach(this).attach(this).commit();
+            isEventUnack = false;
+        }
+        super.onResume();
+
+    }
 
     private void getEvents(final Context mContext, final AlaramsRequest alaramsRequest) {
         SpinnerManager.showSpinner(mContext, "Loading...");

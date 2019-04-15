@@ -74,6 +74,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
+
                     android:text="High priority" />
             </LinearLayout>
         </LinearLayout>
@@ -205,6 +206,21 @@
                        android:text="Notes" />
                </LinearLayout>
            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:padding="10dp"
+                android:gravity="center"
+                android:layout_height="wrap_content">
+               <Button
+                   android:id="@+id/buttonunack"
+                   android:text="un-acknowledge"
+                   android:background="@color/green"
+                   android:textColor="@color/white"
+                   android:padding="5dp"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content" />
+            </LinearLayout>
         </LinearLayout>
 
 

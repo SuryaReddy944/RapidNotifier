@@ -30,7 +30,7 @@ public class EventsResponse  implements Serializable{
     private String eventValues;
     @SerializedName("UserName")
     @Expose
-    private Object userName;
+    private String userName;
     @SerializedName("Acknowledge_Notes")
     @Expose
     private Object acknowledgeNotes;
@@ -103,11 +103,11 @@ public class EventsResponse  implements Serializable{
         this.eventValues = eventValues;
     }
 
-    public Object getUserName() {
+    public String getUserName() {
         return userName;
     }
 
-    public void setUserName(Object userName) {
+    public void setUserName(String userName) {
         this.userName = userName;
     }
 

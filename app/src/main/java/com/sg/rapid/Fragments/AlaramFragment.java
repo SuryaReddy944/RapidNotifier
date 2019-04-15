@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -74,6 +75,7 @@ public class AlaramFragment extends Fragment  implements SwipeRefreshLayout.OnRe
     public int maxposition = endNo;
     final int initialViewHeight = NotificationsFragment.lltopsection.getLayoutParams().height;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    public static boolean isUnack = false;
 
 
     @Nullable
@@ -176,6 +178,8 @@ public class AlaramFragment extends Fragment  implements SwipeRefreshLayout.OnRe
 
 
 
+
+
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -270,6 +274,20 @@ public class AlaramFragment extends Fragment  implements SwipeRefreshLayout.OnRe
         return mView;
     }
 
+
+
+    @Override
+    public void onResume() {
+
+        if(isUnack){
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            ft.detach(this).attach(this).commit();
+            isUnack = false;
+        }
+        super.onResume();
+
+
+    }
 
     private void getAlarams(final Context mContext, AlaramsRequest alaramsRequest) {
         SpinnerManager.showSpinner(mContext, "Loading...");

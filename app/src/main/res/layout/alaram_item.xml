@@ -112,6 +112,7 @@
                     android:text="Tripped"
                     android:textSize="14dp"
                     android:textColor="@color/block" />
+
             </LinearLayout>
 
         </LinearLayout>

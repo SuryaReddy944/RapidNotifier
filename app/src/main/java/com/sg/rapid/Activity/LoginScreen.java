@@ -261,6 +261,7 @@ public class LoginScreen extends AppCompatActivity {
                     TokenResponse mTokenRes = mData.get(0);
                     SharedPreferences.Editor mEditor = pref.edit();
                     mEditor.putString("UserType",mTokenRes.getUserType());
+                    mEditor.putString("UserName",mTokenRes.getUsername());
                     SplashScreen.userType = mTokenRes.getUserType();
                     mEditor.apply();
                 }
